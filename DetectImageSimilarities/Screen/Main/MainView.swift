@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import Photos
 
-struct ContentView: View {
+struct MainView: View {
+    @State private var viewModel: MainViewModel = .init()
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -16,9 +19,12 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            viewModel.requestPhotoAccess()
+        }
     }
 }
 
 #Preview {
-    ContentView()
+    MainView()
 }

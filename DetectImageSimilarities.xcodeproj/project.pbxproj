@@ -8,17 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		E90118432AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90118422AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift */; };
-		E90118452AEB09FE00C30CD9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90118442AEB09FE00C30CD9 /* ContentView.swift */; };
+		E90118452AEB09FE00C30CD9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90118442AEB09FE00C30CD9 /* MainView.swift */; };
 		E90118472AEB09FF00C30CD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E90118462AEB09FF00C30CD9 /* Assets.xcassets */; };
 		E901184A2AEB09FF00C30CD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E90118492AEB09FF00C30CD9 /* Preview Assets.xcassets */; };
+		E98CA68D2AEC4AEE00BC95BC /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA68C2AEC4AEE00BC95BC /* MainViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E901183F2AEB09FE00C30CD9 /* DetectImageSimilarities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DetectImageSimilarities.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E90118422AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectImageSimilaritiesApp.swift; sourceTree = "<group>"; };
-		E90118442AEB09FE00C30CD9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E90118442AEB09FE00C30CD9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E90118462AEB09FF00C30CD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E90118492AEB09FF00C30CD9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E98CA68C2AEC4AEE00BC95BC /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +53,8 @@
 		E90118412AEB09FE00C30CD9 /* DetectImageSimilarities */ = {
 			isa = PBXGroup;
 			children = (
+				E98CA68A2AEC4AB500BC95BC /* Screen */,
 				E90118422AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift */,
-				E90118442AEB09FE00C30CD9 /* ContentView.swift */,
 				E90118462AEB09FF00C30CD9 /* Assets.xcassets */,
 				E90118482AEB09FF00C30CD9 /* Preview Content */,
 			);
@@ -65,6 +67,23 @@
 				E90118492AEB09FF00C30CD9 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E98CA68A2AEC4AB500BC95BC /* Screen */ = {
+			isa = PBXGroup;
+			children = (
+				E98CA68B2AEC4ADB00BC95BC /* Main */,
+			);
+			path = Screen;
+			sourceTree = "<group>";
+		};
+		E98CA68B2AEC4ADB00BC95BC /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E90118442AEB09FE00C30CD9 /* MainView.swift */,
+				E98CA68C2AEC4AEE00BC95BC /* MainViewModel.swift */,
+			);
+			path = Main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +156,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E90118452AEB09FE00C30CD9 /* ContentView.swift in Sources */,
+				E90118452AEB09FE00C30CD9 /* MainView.swift in Sources */,
 				E90118432AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift in Sources */,
+				E98CA68D2AEC4AEE00BC95BC /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +295,7 @@
 				DEVELOPMENT_TEAM = 8F8TZUV25Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant us access to your photo library to enable us to provide you with a better experience and to access your photos for comparing and finding duplicates.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -304,6 +325,7 @@
 				DEVELOPMENT_TEAM = 8F8TZUV25Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please grant us access to your photo library to enable us to provide you with a better experience and to access your photos for comparing and finding duplicates.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

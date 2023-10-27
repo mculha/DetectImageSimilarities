@@ -11,7 +11,7 @@ import SwiftUI
 struct DetectImageSimilaritiesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }
