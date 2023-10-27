@@ -12,16 +12,15 @@ import UIKit
 @Observable final class MainViewModel {
     
     var imageAssets: [UIImage] = []
+    var photosPermission: PermissionProtocol = PhotosPermission()
     
-    func requestPhotoAccess() {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    func requestPhotoAccess() async {
+        
+        
+        let status = await photosPermission.requestAuthorization()
+        
         if status == .authorized {
             self.fetchImages()
-        } else if status == .notDetermined {
-            PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-                guard status == .authorized else { return }
-                self.fetchImages()
-            }
         } else {
             //TODO Handle denied case
         }

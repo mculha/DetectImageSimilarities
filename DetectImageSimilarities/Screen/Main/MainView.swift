@@ -19,8 +19,8 @@ struct MainView: View {
             Text("Hello, world!")
         }
         .padding()
-        .onAppear {
-            viewModel.requestPhotoAccess()
+        .task {
+            await viewModel.requestPhotoAccess()
         }
     }
 }
