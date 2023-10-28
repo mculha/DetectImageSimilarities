@@ -8,8 +8,8 @@
 import SwiftUI
 import Photos
 
-struct MainView: View {
-    @State private var viewModel: MainViewModel = .init()
+struct PhotoCollectionView: View {
+    @State private var viewModel: PhotoCollectionViewModel = .init()
     
     private let columns: [GridItem] = [
         GridItem(.fixed(120)),
@@ -45,5 +45,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    PhotoCollectionView()
 }

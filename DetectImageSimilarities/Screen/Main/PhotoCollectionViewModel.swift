@@ -9,7 +9,7 @@ import Foundation
 import Photos
 import UIKit
 
-@Observable final class MainViewModel {
+@Observable final class PhotoCollectionViewModel {
     
     var imageAssets: [UIImage] = []
     private var photosPermission: PermissionProtocol = PhotosPermission()
