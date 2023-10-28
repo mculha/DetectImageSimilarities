@@ -11,14 +11,33 @@ import Photos
 struct MainView: View {
     @State private var viewModel: MainViewModel = .init()
     
+    private let columns: [GridItem] = [
+        GridItem(.fixed(120)),
+        GridItem(.fixed(120)),
+        GridItem(.fixed(120))
+    ]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack {
+                
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 0) {
+                        ForEach(viewModel.imageAssets, id: \.self) { image in
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(1, contentMode: .fit)
+                                .scaledToFit()
+                                
+                            
+                        }
+                    }
+                }
+            }
+            .padding()
+            .navigationTitle("Photos")
         }
-        .padding()
         .task {
             await viewModel.requestPhotoAccess()
         }

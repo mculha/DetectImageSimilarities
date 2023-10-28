@@ -12,7 +12,7 @@ import UIKit
 @Observable final class MainViewModel {
     
     var imageAssets: [UIImage] = []
-    var photosPermission: PermissionProtocol = PhotosPermission()
+    private var photosPermission: PermissionProtocol = PhotosPermission()
     
     func requestPhotoAccess() async {
         
