@@ -16,18 +16,21 @@ class PhotoAssetCollection: RandomAccessCollection {
     
     var startIndex: Int { 0 }
     var endIndex: Int { fetchResult.count }
-    
+    let queue = DispatchQueue(label: "queue_cache") // serial queue
+
     init(_ fetchResult: PHFetchResult<PHAsset>) {
         self.fetchResult = fetchResult
     }
 
     subscript(position: Int) -> PhotoAsset {
-        if let asset = cache[position] {
+        queue.sync {
+            if let asset = cache[position] {
+                return asset
+            }
+            let asset = PhotoAsset(phAsset: fetchResult.object(at: position), index: position)
+            self.cache[position] = asset
             return asset
         }
-        let asset = PhotoAsset(phAsset: fetchResult.object(at: position), index: position)
-        cache[position] = asset
-        return asset
     }
     
     var phAssets: [PHAsset] {

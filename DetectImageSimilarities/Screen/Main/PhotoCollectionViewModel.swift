@@ -11,6 +11,8 @@ import UIKit
 
 @Observable final class PhotoCollectionViewModel {
     
+    let photoCollection = PhotoCollection(smartAlbum: .smartAlbumUserLibrary)
+    
     var imageAssets: [UIImage] = []
     private var photosPermission: PermissionProtocol = PhotosPermission()
     

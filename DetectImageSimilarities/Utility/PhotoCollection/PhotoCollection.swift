@@ -6,11 +6,13 @@
 //
 
 import Photos
+import SwiftUI
 
 final class PhotoCollection: NSObject, ObservableObject {
     
     @Published var photoAssets: PhotoAssetCollection = PhotoAssetCollection(PHFetchResult<PHAsset>())
-    
+    @Published var thumbnailImage: Image?
+
     var identifier: String? {
         return assetCollection?.localIdentifier
     }
@@ -20,7 +22,7 @@ final class PhotoCollection: NSObject, ObservableObject {
     let cache = CachedImageManager()
     private var assetCollection: PHAssetCollection?
     private var createAlbumIfNotFound = false
-    
+    var isPhotosLoaded = false
     
     enum PhotoCollectionError: LocalizedError {
         case missingAssetCollection
@@ -219,6 +221,43 @@ extension PhotoCollection: PHPhotoLibraryChangeObserver {
         Task { @MainActor in
             guard let changes = changeInstance.changeDetails(for: self.photoAssets.fetchResult) else { return }
             await self.refreshPhotoAssets(changes.fetchResultAfterChanges)
+        }
+    }
+}
+
+extension PhotoCollection {
+    func loadPhotos() async {
+        guard !isPhotosLoaded else { return }
+        let photosPermission: PermissionProtocol = PhotosPermission()
+
+        let authorized = await photosPermission.requestAuthorization()
+        guard authorized == .authorized else { return }
+        
+        Task {
+            do {
+                try await self.load()
+                await self.loadThumbnail()
+            } catch { }
+            self.isPhotosLoaded = true
+        }
+    }
+    
+    func loadThumbnail() async {
+        guard let asset = photoAssets.first  else { return }
+        await cache.requestImage(for: asset, targetSize: CGSize(width: 256, height: 256))  { result in
+            if let result = result {
+                Task { @MainActor in
+                    self.thumbnailImage = result.image
+                }
+            }
+        }
+    }
+    
+    func savePhoto(imageData: Data) {
+        Task {
+            do {
+                try await addImage(imageData)
+            } catch { }
         }
     }
 }
