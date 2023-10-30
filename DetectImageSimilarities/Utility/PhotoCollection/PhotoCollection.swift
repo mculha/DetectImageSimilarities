@@ -12,6 +12,8 @@ final class PhotoCollection: NSObject, ObservableObject {
     
     @Published var photoAssets: PhotoAssetCollection = PhotoAssetCollection(PHFetchResult<PHAsset>())
     @Published var thumbnailImage: Image?
+    
+    var images: [UIImage] = []
 
     var identifier: String? {
         return assetCollection?.localIdentifier
@@ -172,10 +174,35 @@ final class PhotoCollection: NSObject, ObservableObject {
         if let newFetchResult = newFetchResult {
             await MainActor.run {
                 photoAssets = PhotoAssetCollection(newFetchResult)
+                fetchAllImages()
             }
         }
     }
     
+    private func fetchAllImages() {
+        for phAsset in photoAssets.phAssets {
+            let image = loadImage(from: phAsset)
+            self.images.append(image)
+        }
+    }
+    
+    private func loadImage(from asset: PHAsset) -> UIImage {
+        let imageManager = PHImageManager.default()
+        let targetSize = CGSize(width: 300, height: 300)
+        
+        let options = PHImageRequestOptions()
+        options.isSynchronous = true
+        
+        var image: UIImage = UIImage()
+        
+        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { result, _ in
+            if let result = result {
+                image = result
+            }
+        }
+        
+        return image
+    }
     
     private static func getAlbum(identifier: String) -> PHAssetCollection? {
         let fetchOptions = PHFetchOptions()
