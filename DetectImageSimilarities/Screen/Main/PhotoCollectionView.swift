@@ -30,21 +30,27 @@ struct PhotoCollectionView: View {
             VStack {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
-                        ForEach(viewModel.photoAssets) { asset in
-                            PhotoItemView(asset: asset, cache: viewModel.cache, imageSize: imageSize)
+                        ForEach(viewModel.samePhotoAssets, id: \.self) { asset in
+                            Image(uiImage: asset)
                                 .frame(width: Self.itemSize.width, height: Self.itemSize.height)
                                 .clipped()
                                 .cornerRadius(Self.itemCornerRadius)
-                                .onAppear {
-                                    Task {
-                                        await viewModel.cache.startCaching(for: [asset], targetSize: imageSize)
-                                    }
-                                }
-                                .onDisappear {
-                                    Task {
-                                        await viewModel.cache.stopCaching(for: [asset], targetSize: imageSize)
-                                    }
-                                }
+                            
+                            
+//                            PhotoItemView(asset: asset, cache: viewModel.cache, imageSize: imageSize)
+//                                .frame(width: Self.itemSize.width, height: Self.itemSize.height)
+//                                .clipped()
+//                                .cornerRadius(Self.itemCornerRadius)
+//                                .onAppear {
+//                                    Task {
+//                                        await viewModel.cache.startCaching(for: [asset], targetSize: imageSize)
+//                                    }
+//                                }
+//                                .onDisappear {
+//                                    Task {
+//                                        await viewModel.cache.stopCaching(for: [asset], targetSize: imageSize)
+//                                    }
+//                                }
                         }
                     }
                 }

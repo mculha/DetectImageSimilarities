@@ -7,11 +7,13 @@
 
 import Photos
 import SwiftUI
+import Vision
 
 final class PhotoCollection: NSObject, ObservableObject {
     
     @Published var photoAssets: PhotoAssetCollection = PhotoAssetCollection(PHFetchResult<PHAsset>())
     @Published var thumbnailImage: Image?
+    @Published var samePhotoAssets: [UIImage] = []
     
     var images: [UIImage] = []
 
@@ -183,6 +185,46 @@ final class PhotoCollection: NSObject, ObservableObject {
         for phAsset in photoAssets.phAssets {
             let image = loadImage(from: phAsset)
             self.images.append(image)
+        }
+        self.findSimilarities()
+    }
+    
+    private func findSimilarities() {
+        for i in 0..<100 {
+            print("Deneme i has been Changed to \(i + 1)")
+
+            for j in (i + 1)..<100 {
+                let sourceObservation = featureprintObservationForImage(image: images[i])!
+                let image = images[j]
+                let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+                let request = VNGenerateImageFeaturePrintRequest()
+                do {
+                    try requestHandler.perform([request])
+                    let result = request.results?.first as? VNFeaturePrintObservation
+                    var distance = Float(0)
+                    try result?.computeDistance(&distance, to: sourceObservation)
+                    if distance < 0.4 {
+                        samePhotoAssets.append(image)
+                        samePhotoAssets.append(images[i])
+                    }
+                    print("Deneme Distance \(distance)")
+                } catch {
+                    print("Deneme Error \(error.localizedDescription)")
+                }
+            }
+            
+        }
+    }
+    
+    func featureprintObservationForImage(image: UIImage) -> VNFeaturePrintObservation? {
+        let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+        let request = VNGenerateImageFeaturePrintRequest()
+        do {
+            try requestHandler.perform([request])
+            return request.results?.first as? VNFeaturePrintObservation
+        } catch {
+            print("Vision error: \(error)")
+            return nil
         }
     }
     
