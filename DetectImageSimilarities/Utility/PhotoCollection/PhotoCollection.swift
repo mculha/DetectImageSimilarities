@@ -203,9 +203,14 @@ final class PhotoCollection: NSObject, ObservableObject {
                     let result = request.results?.first as? VNFeaturePrintObservation
                     var distance = Float(0)
                     try result?.computeDistance(&distance, to: sourceObservation)
-                    if distance < 0.4 {
-                        samePhotoAssets.append(image)
-                        samePhotoAssets.append(images[i])
+                    if distance < 0.2 {
+                        if !samePhotoAssets.contains(image) {
+                            samePhotoAssets.append(image)
+                        }
+                        
+                        if !samePhotoAssets.contains(images[i]) {
+                            samePhotoAssets.append(images[i])
+                        }
                     }
                     print("Deneme Distance \(distance)")
                 } catch {
