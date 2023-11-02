@@ -9,7 +9,7 @@ import SwiftUI
 import Photos
 
 struct PhotoCollectionView: View {
-    @StateObject private var viewModel: PhotoCollection = PhotoCollection(smartAlbum: .smartAlbumUserLibrary)
+    @State private var viewModel: PhotoCollectionViewModel = .init(smartAlbum: .smartAlbumUserLibrary)
 
     
     @Environment(\.displayScale) private var displayScale
@@ -30,7 +30,7 @@ struct PhotoCollectionView: View {
             VStack {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
-                        ForEach(viewModel.samePhotoAssets, id: \.self) { asset in
+                        ForEach(viewModel.similarPhotos, id: \.self) { asset in
                             Image(uiImage: asset)
                                 .frame(width: Self.itemSize.width, height: Self.itemSize.height)
                                 .clipped()
@@ -56,8 +56,7 @@ struct PhotoCollectionView: View {
                 }
             }
             .task {
-                await viewModel.loadPhotos()
-                await viewModel.loadThumbnail()
+                await viewModel.requestPhotoAccess()
             }
             .padding()
             .navigationTitle("Photos")
