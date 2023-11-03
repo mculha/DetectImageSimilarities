@@ -11,9 +11,7 @@ import UIKit
 import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
-    
-    let photoCollection = PhotoCollection(smartAlbum: .smartAlbumUserLibrary)
-    
+        
     var imageAssets: [UIImage] = []
     var similarPhotos: [UIImage] = []
     private var photosPermission: PermissionProtocol = PhotosPermission()
@@ -40,22 +38,9 @@ import Vision
         }
     }
     
-    
-    
-    
-    private func fetchImages() {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let assets = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-        
-        assets.enumerateObjects { asset, _, _ in
-            self.imageAssets.append(self.loadImage(from: asset))
-        }
-    }
-    
     func loadImage(from asset: PHAsset) -> UIImage {
         let imageManager = PHImageManager.default()
-        let targetSize = CGSize(width: 100, height: 100)
+        let targetSize = CGSize(width: 300, height: 300)
         
         let options = PHImageRequestOptions()
         options.isSynchronous = true
@@ -101,13 +86,8 @@ import Vision
                     var distance = Float(0)
                     try result?.computeDistance(&distance, to: sourceObservation)
                     if distance < 0.2 {
-                        if !similarPhotos.contains(image) {
-                            similarPhotos.append(image)
-                        }
-                        
-                        if !similarPhotos.contains(imageAssets[i]) {
-                            similarPhotos.append(imageAssets[i])
-                        }
+                        similarPhotos.append(image)
+                        similarPhotos.append(imageAssets[i])
                     }
                     print("Deneme Distance \(distance)")
                 } catch {
