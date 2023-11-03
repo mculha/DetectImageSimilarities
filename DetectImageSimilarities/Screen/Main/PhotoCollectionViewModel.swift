@@ -12,7 +12,6 @@ import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
         
-    var imageAssets: [UIImage] = []
     var similarPhotos: [UIImage] = []
     private var photosPermission: PermissionProtocol = PhotosPermission()
     private var smartAlbumType: PHAssetCollectionSubtype
@@ -38,22 +37,22 @@ import Vision
         }
     }
     
-    func loadImage(from asset: PHAsset) -> UIImage {
+    func loadImage(from asset: PHAsset) -> ImageModel? {
         let imageManager = PHImageManager.default()
         let targetSize = CGSize(width: 300, height: 300)
         
         let options = PHImageRequestOptions()
         options.isSynchronous = true
         
-        var image: UIImage = UIImage()
+        var imageModel: ImageModel?
         
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { result, _ in
-            if let result = result {
-                image = result
+            if let result {
+                imageModel = ImageModel(image: result, creationDate: asset.creationDate)
             }
         }
         
-        return image
+        return imageModel
     }
     
     private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) async {
@@ -66,19 +65,21 @@ import Vision
         }
         
         if let newFetchResult {
-            newFetchResult.enumerateObjects { asset, _, _ in self.imageAssets.append(self.loadImage(from: asset)) }
-            self.findSimilarities()
+            var images: [ImageModel?] = []
+            newFetchResult.enumerateObjects { asset, _, _ in images.append(self.loadImage(from: asset)) }
+            self.findSimilarities(images: images.compactMap { $0 })
         }
     }
     
-    private func findSimilarities() {
+    private func findSimilarities(images: [ImageModel]) {
         for i in 0..<100 {
             print("Deneme i has been Changed to \(i + 1)")
 
             for j in (i + 1)..<100 {
-                let sourceObservation = featureprintObservationForImage(image: imageAssets[i])!
-                let image = imageAssets[j]
-                let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+                let sourceImage = images[i].image
+                let destinationImage = images[j].image
+                let sourceObservation = featureprintObservationForImage(image: sourceImage)!
+                let requestHandler = VNImageRequestHandler(cgImage: destinationImage.cgImage!, options: [:])
                 let request = VNGenerateImageFeaturePrintRequest()
                 do {
                     try requestHandler.perform([request])
@@ -86,8 +87,8 @@ import Vision
                     var distance = Float(0)
                     try result?.computeDistance(&distance, to: sourceObservation)
                     if distance < 0.2 {
-                        similarPhotos.append(image)
-                        similarPhotos.append(imageAssets[i])
+                        similarPhotos.append(destinationImage)
+                        similarPhotos.append(sourceImage)
                     }
                     print("Deneme Distance \(distance)")
                 } catch {
@@ -120,4 +121,10 @@ extension PhotoCollectionViewModel: PHPhotoLibraryChangeObserver {
             await self.refreshPhotoAssets(changes.fetchResultAfterChanges)
         }
     }
+}
+
+struct ImageModel {
+    let id: UUID = UUID()
+    let image: UIImage
+    let creationDate: Date?
 }
