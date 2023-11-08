@@ -13,8 +13,12 @@ import Vision
 @Observable final class PhotoCollectionViewModel: NSObject {
         
     var similarPhotos: [UIImage] = []
+    
+    @ObservationIgnored
     private var photosPermission: PermissionProtocol = PhotosPermission()
+    @ObservationIgnored
     private var smartAlbumType: PHAssetCollectionSubtype
+    @ObservationIgnored
     private var fetchResult = PHFetchResult<PHAsset>()
 
     deinit {
@@ -78,39 +82,26 @@ import Vision
             for j in (i + 1)..<100 {
                 let sourceImage = images[i].image
                 let destinationImage = images[j].image
-                let sourceObservation = featureprintObservationForImage(image: sourceImage)!
-                let requestHandler = VNImageRequestHandler(cgImage: destinationImage.cgImage!, options: [:])
-                let request = VNGenerateImageFeaturePrintRequest()
-                do {
-                    try requestHandler.perform([request])
-                    let result = request.results?.first as? VNFeaturePrintObservation
-                    var distance = Float(0)
-                    try result?.computeDistance(&distance, to: sourceObservation)
-                    if distance < 0.2 {
-                        similarPhotos.append(destinationImage)
-                        similarPhotos.append(sourceImage)
-                    }
-                    print("Deneme Distance \(distance)")
-                } catch {
-                    print("Deneme Error \(error.localizedDescription)")
+                let sourceObservation = observation(for: sourceImage)!
+                let destinationObservation = observation(for: destinationImage)!
+                
+                var distance = Float(0)
+                try? destinationObservation.computeDistance(&distance, to: sourceObservation)
+                if distance < 0.2 {
+                    similarPhotos.append(destinationImage)
+                    similarPhotos.append(sourceImage)
                 }
             }
             
         }
     }
     
-    func featureprintObservationForImage(image: UIImage) -> VNFeaturePrintObservation? {
+    func observation(for image: UIImage) -> VNFeaturePrintObservation? {
         let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
         let request = VNGenerateImageFeaturePrintRequest()
-        do {
-            try requestHandler.perform([request])
-            return request.results?.first as? VNFeaturePrintObservation
-        } catch {
-            print("Vision error: \(error)")
-            return nil
-        }
+        try? requestHandler.perform([request])
+        return request.results?.first as? VNFeaturePrintObservation
     }
-    
 }
 
 extension PhotoCollectionViewModel: PHPhotoLibraryChangeObserver {
@@ -121,10 +112,4 @@ extension PhotoCollectionViewModel: PHPhotoLibraryChangeObserver {
             await self.refreshPhotoAssets(changes.fetchResultAfterChanges)
         }
     }
-}
-
-struct ImageModel {
-    let id: UUID = UUID()
-    let image: UIImage
-    let creationDate: Date?
 }
