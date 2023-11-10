@@ -20,10 +20,6 @@ import Vision
     private var smartAlbumType: PHAssetCollectionSubtype
     @ObservationIgnored
     private var fetchResult = PHFetchResult<PHAsset>()
-
-    deinit {
-        PHPhotoLibrary.shared().unregisterChangeObserver(self)
-    }
     
     init(smartAlbum smartAlbumType: PHAssetCollectionSubtype) {
         self.smartAlbumType = smartAlbumType
@@ -124,15 +120,5 @@ import Vision
 
         }
         return request.results?.first as? VNFeaturePrintObservation
-    }
-}
-
-extension PhotoCollectionViewModel: PHPhotoLibraryChangeObserver {
-    
-    func photoLibraryDidChange(_ changeInstance: PHChange) {
-        Task { @MainActor in
-            guard let changes = changeInstance.changeDetails(for: fetchResult) else { return }
-            await self.refreshPhotoAssets(changes.fetchResultAfterChanges)
-        }
     }
 }
