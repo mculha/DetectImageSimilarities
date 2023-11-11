@@ -60,7 +60,9 @@ import Vision
         return request.results?.first as? VNFeaturePrintObservation
     }
     
+    var t1: TimeInterval = 0
     private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
+        t1 = NSDate().timeIntervalSince1970
         var newFetchResult = fetchResult
         
         if newFetchResult == nil {
@@ -98,21 +100,27 @@ import Vision
     private func findSimilarities(images: [ImageModel]) {
         let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
 
-        print("Deneme \(images.count)")
-
-        let source = images.first!
-        let subArrays = images.splitInSubArrays(into: 2)
-        for (subArrayIndex, subArray) in subArrays.enumerated() {
+//        let t1 = NSDate().timeIntervalSince1970
+        for firstIndex in 0..<images.count {
             concurrentQueue.async {
-                for index in 0..<subArray.count {
-                    let destinationImage = images[index]
-                    
-                    let distance = self.findDistance(source: source.observation, destination: destinationImage.observation)
-                    print("Deneme Distance - \(subArrayIndex): \(distance)")
+                for secondIndex in (firstIndex + 1)..<images.count {
+                    let destination = images[secondIndex]
+                    let source = images[firstIndex]
+
+                    let distance = self.findDistance(source: source.observation, destination: destination.observation)
+                    print("Deneme Distance - i: \(firstIndex) - y: \(secondIndex): \(distance)")
+
                 }
             }
         }
-
+        concurrentQueue.sync(flags: .barrier) {
+            print("Deneme Finished All Tasks ")
+            
+            let t2 = NSDate().timeIntervalSince1970
+            print("Deneme Finished \(t2 - t1)")
+            
+        }
+        
 //        concurrentQueue.async {
 //            for index in 1..<subArrays[0].count {
 //                let destinationImage = images[index]
@@ -144,10 +152,7 @@ import Vision
 //            }
 //        }
         
-        concurrentQueue.sync(flags: .barrier) {
-            print("Deneme Finished All Tasks ")
-            
-        }
+        
         
 //        for i in 0..<100 {
 //            print("Deneme i has been Changed to \(i + 1)")
