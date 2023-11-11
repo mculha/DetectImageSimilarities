@@ -40,6 +40,10 @@ import Vision
         let targetSize = CGSize(width: 300, height: 300)
         
         let options = PHImageRequestOptions()
+        options.version = .current
+        options.resizeMode = .exact
+        options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = true
         options.isSynchronous = true
         
         var imageModel: ImageModel?
