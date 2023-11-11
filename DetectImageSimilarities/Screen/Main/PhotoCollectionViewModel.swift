@@ -29,9 +29,7 @@ import Vision
         let status = await photosPermission.requestAuthorization()
         
         if status == .authorized {
-            Task {
-                await refreshPhotoAssets()
-            }
+            refreshPhotoAssets()
         } else {
             //TODO Handle denied case
         }
@@ -55,7 +53,14 @@ import Vision
         return imageModel
     }
     
-    private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) async {
+    private func observation(image: UIImage) -> VNFeaturePrintObservation? {
+        let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+        let request = VNGenerateImageFeaturePrintRequest()
+        try? requestHandler.perform([request])
+        return request.results?.first as? VNFeaturePrintObservation
+    }
+    
+    private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
         var newFetchResult = fetchResult
         
         if newFetchResult == nil {
@@ -64,61 +69,116 @@ import Vision
             newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
         }
         
-        if let newFetchResult {
-            var images: [ImageModel?] = []
-            newFetchResult.enumerateObjects { asset, _, _ in images.append(self.loadImage(from: asset)) }
-            self.findSimilarities(images: images.compactMap { $0 })
+        guard  let newFetchResult else { return }
+        var images: [ImageModel] = []
+        
+        newFetchResult.enumerateObjects { asset, _, _ in
+            if let imageModel = self.loadImage(from: asset) {
+                images.append(imageModel)
+            }
+
         }
+        let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+        let subImageArrays = images.splitInSubArrays(into: 4)
+        
+        for subImageArray in subImageArrays {
+            concurrentQueue.async {
+                for imageModel in subImageArray {
+                    imageModel.observation = self.observation(image: imageModel.image)
+                }
+            }
+        }
+        
+        concurrentQueue.sync(flags: .barrier) {
+            self.findSimilarities(images: images)
+        }
+        
     }
     
     private func findSimilarities(images: [ImageModel]) {
         let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-        let group = DispatchGroup()
-        
-        for i in 0..<100 {
-            print("Deneme i has been Changed to \(i + 1)")
-            
-            for j in (i + 1)..<100 {
-                concurrentQueue.async(group: group) {
-                    // Your synchronous code goes here
-                    let sourceImage = images[i].image
-                    let destinationImage = images[j].image
-                    let sourceObservation = self.observation(for: sourceImage, i: i, j: j)
-                    let destinationObservation = self.observation(for: destinationImage, i: i, j: j)
+
+        print("Deneme \(images.count)")
+
+        let source = images.first!
+        let subArrays = images.splitInSubArrays(into: 2)
+        for (subArrayIndex, subArray) in subArrays.enumerated() {
+            concurrentQueue.async {
+                for index in 0..<subArray.count {
+                    let destinationImage = images[index]
                     
-                    if let sourceObservation, let destinationObservation {
-                        var distance = Float(0)
-                        try? destinationObservation.computeDistance(&distance, to: sourceObservation)
-                        if distance < 0.2 {
-                            self.similarPhotos.append(destinationImage)
-                            self.similarPhotos.append(sourceImage)
-                        }
-                    }
-                    
-                    print("Deneme i: \(i) - j: \(j)")
-                    
+                    let distance = self.findDistance(source: source.observation, destination: destinationImage.observation)
+                    print("Deneme Distance - \(subArrayIndex): \(distance)")
                 }
             }
         }
-        group.wait()
-        group.notify(queue: DispatchQueue.main) {
-            print("Deneme All tasks have completed")
+
+//        concurrentQueue.async {
+//            for index in 1..<subArrays[0].count {
+//                let destinationImage = images[index]
+//                
+//                let distance = self.findDistance(source: destinationImage.observation, destination: image.observation)
+//                print("Deneme Distance - 1: \(distance)")
+//            }
+//        }
+//        
+//        concurrentQueue.async {
+//            for index in 1..<subArrays[1].count {
+//                let destinationImage = images[index]
+//                
+//                let distance = self.findDistance(source: destinationImage.observation, destination: image.observation)
+//                print("Deneme Distance - 2: \(distance)")
+//            }
+//        }
+        
+//        for imageGroup in images {
+//            for i in 0..<imageGroup.count {
+//                for j in (i + 1)..<imageGroup.count {
+//                    concurrentQueue.async {
+//                        let distance = self.findDistance(source: imageGroup[i].image, destination: imageGroup[j].image, i: i, j: j)
+//                        print("Deneme Distance: \(distance) - i:\(i) - j:\(j)")
+//                    
+//                    }
+//                    
+//                }
+//            }
+//        }
+        
+        concurrentQueue.sync(flags: .barrier) {
+            print("Deneme Finished All Tasks ")
+            
         }
+        
+//        for i in 0..<100 {
+//            print("Deneme i has been Changed to \(i + 1)")
+//            
+//            for j in (i + 1)..<100 {
+//                Task {
+//                    let distance = await findDistance(source: images[i].image, destination: images[j].image, i: i, j: j)
+//                    print("Deneme Distance: \(distance) - i:\(i) - j:\(j)")
+//                }
+//            }
+//        }
+//        group.wait()
+//        group.notify(queue: DispatchQueue.main) {
+//            print("Deneme All tasks have completed")
+//        }
         
 
     }
     
-    
-    private func observation(for image: UIImage, i: Int, j: Int) -> VNFeaturePrintObservation? {
-        let requestHandler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
-        let request = VNGenerateImageFeaturePrintRequest()
-        DispatchQueue.main.async {
-            
-            print("Deneme Before Perform i: \(i) - j: \(j)")
-            try? requestHandler.perform([request])
-            print("Deneme After Perform i: \(i) - j: \(j)")
+    private func findDistance(source: VNFeaturePrintObservation?, destination: VNFeaturePrintObservation?) -> Float {
+        guard let source, let destination else { return 100.0 }
+        var distance = Float(0)
+        try? destination.computeDistance(&distance, to: source)
+        return distance
+    }
+}
 
+extension Array {
+    func splitInSubArrays(into size: Int) -> [[Element]] {
+        return (0..<size).map {
+            stride(from: $0, to: count, by: size).map { self[$0] }
         }
-        return request.results?.first as? VNFeaturePrintObservation
     }
 }

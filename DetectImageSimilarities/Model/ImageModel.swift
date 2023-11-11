@@ -7,9 +7,17 @@
 
 import Foundation
 import UIKit
+import Vision
 
-struct ImageModel {
+class ImageModel {
     let id: UUID = UUID()
     let image: UIImage
     let creationDate: Date?
+    var observation: VNFeaturePrintObservation? = nil
+    
+    init(image: UIImage, creationDate: Date?, observation: VNFeaturePrintObservation? = nil) {
+        self.image = image
+        self.creationDate = creationDate
+        self.observation = observation
+    }
 }
