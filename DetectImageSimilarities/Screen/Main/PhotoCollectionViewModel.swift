@@ -60,9 +60,7 @@ import Vision
         return request.results?.first as? VNFeaturePrintObservation
     }
     
-    var t1: TimeInterval = 0
     private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
-        t1 = NSDate().timeIntervalSince1970
         var newFetchResult = fetchResult
         
         if newFetchResult == nil {
@@ -80,96 +78,43 @@ import Vision
             }
 
         }
-        let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+        let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         let subImageArrays = images.splitInSubArrays(into: 4)
         
         for subImageArray in subImageArrays {
-            concurrentQueue.async {
+            queue.async {
                 for imageModel in subImageArray {
                     imageModel.observation = self.observation(image: imageModel.image)
                 }
             }
         }
         
-        concurrentQueue.sync(flags: .barrier) {
+        queue.sync(flags: .barrier) {
             self.findSimilarities(images: images)
         }
         
     }
     
     private func findSimilarities(images: [ImageModel]) {
-        let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-
-//        let t1 = NSDate().timeIntervalSince1970
+        let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+        
         for firstIndex in 0..<images.count {
-            concurrentQueue.async {
+            queue.async {
                 for secondIndex in (firstIndex + 1)..<images.count {
                     let destination = images[secondIndex]
                     let source = images[firstIndex]
 
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
-                    print("Deneme Distance - i: \(firstIndex) - y: \(secondIndex): \(distance)")
-
+                    if distance == 0 {
+                        self.similarPhotos.append(source.image)
+                        self.similarPhotos.append(destination.image)
+                    }
                 }
             }
         }
-        concurrentQueue.sync(flags: .barrier) {
-            print("Deneme Finished All Tasks ")
-            
-            let t2 = NSDate().timeIntervalSince1970
-            print("Deneme Finished \(t2 - t1)")
-            
+        queue.sync(flags: .barrier) {
+            //TODO - Build Here
         }
-        
-//        concurrentQueue.async {
-//            for index in 1..<subArrays[0].count {
-//                let destinationImage = images[index]
-//                
-//                let distance = self.findDistance(source: destinationImage.observation, destination: image.observation)
-//                print("Deneme Distance - 1: \(distance)")
-//            }
-//        }
-//        
-//        concurrentQueue.async {
-//            for index in 1..<subArrays[1].count {
-//                let destinationImage = images[index]
-//                
-//                let distance = self.findDistance(source: destinationImage.observation, destination: image.observation)
-//                print("Deneme Distance - 2: \(distance)")
-//            }
-//        }
-        
-//        for imageGroup in images {
-//            for i in 0..<imageGroup.count {
-//                for j in (i + 1)..<imageGroup.count {
-//                    concurrentQueue.async {
-//                        let distance = self.findDistance(source: imageGroup[i].image, destination: imageGroup[j].image, i: i, j: j)
-//                        print("Deneme Distance: \(distance) - i:\(i) - j:\(j)")
-//                    
-//                    }
-//                    
-//                }
-//            }
-//        }
-        
-        
-        
-//        for i in 0..<100 {
-//            print("Deneme i has been Changed to \(i + 1)")
-//            
-//            for j in (i + 1)..<100 {
-//                Task {
-//                    let distance = await findDistance(source: images[i].image, destination: images[j].image, i: i, j: j)
-//                    print("Deneme Distance: \(distance) - i:\(i) - j:\(j)")
-//                }
-//            }
-//        }
-//        group.wait()
-//        group.notify(queue: DispatchQueue.main) {
-//            print("Deneme All tasks have completed")
-//        }
-        
-
     }
     
     private func findDistance(source: VNFeaturePrintObservation?, destination: VNFeaturePrintObservation?) -> Float {
@@ -177,13 +122,5 @@ import Vision
         var distance = Float(0)
         try? destination.computeDistance(&distance, to: source)
         return distance
-    }
-}
-
-extension Array {
-    func splitInSubArrays(into size: Int) -> [[Element]] {
-        return (0..<size).map {
-            stride(from: $0, to: count, by: size).map { self[$0] }
-        }
     }
 }

@@ -20,6 +20,7 @@
 		E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */; };
 		E98CA6932AEC575E00BC95BC /* PhotosPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */; };
 		E9A2E7CE2AFC20A700323ECD /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A2E7CD2AFC20A700323ECD /* ImageModel.swift */; };
+		E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionProtocol.swift; sourceTree = "<group>"; };
 		E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosPermission.swift; sourceTree = "<group>"; };
 		E9A2E7CD2AFC20A700323ECD /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
+		E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Array.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 		E98CA68E2AEC56A200BC95BC /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				E9A7F9AA2B00130A00BE1119 /* Extension */,
 				E95FEA332AEDB376003BB115 /* PhotoCollection */,
 				E98CA68F2AEC56CF00BC95BC /* Permission */,
 			);
@@ -140,6 +143,14 @@
 				E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */,
 			);
 			path = Permission;
+			sourceTree = "<group>";
+		};
+		E9A7F9AA2B00130A00BE1119 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,6 +230,7 @@
 				E90118432AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift in Sources */,
 				E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */,
 				E95FEA352AEDB3E4003BB115 /* PhotoCollection.swift in Sources */,
+				E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */,
 				E95FEA3A2AEDB54C003BB115 /* PhotoAsset.swift in Sources */,
 				E98CA68D2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift in Sources */,
 				E95FEA3C2AEDB71C003BB115 /* PhotoAssetCollection.swift in Sources */,
