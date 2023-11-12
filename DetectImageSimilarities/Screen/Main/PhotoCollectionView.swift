@@ -36,21 +36,6 @@ struct PhotoCollectionView: View {
                                 .clipped()
                                 .cornerRadius(Self.itemCornerRadius)
                             
-                            
-//                            PhotoItemView(asset: asset, cache: viewModel.cache, imageSize: imageSize)
-//                                .frame(width: Self.itemSize.width, height: Self.itemSize.height)
-//                                .clipped()
-//                                .cornerRadius(Self.itemCornerRadius)
-//                                .onAppear {
-//                                    Task {
-//                                        await viewModel.cache.startCaching(for: [asset], targetSize: imageSize)
-//                                    }
-//                                }
-//                                .onDisappear {
-//                                    Task {
-//                                        await viewModel.cache.stopCaching(for: [asset], targetSize: imageSize)
-//                                    }
-//                                }
                         }
                     }
                 }
