@@ -35,7 +35,7 @@ import Vision
         }
     }
     
-    func loadImage(from asset: PHAsset) -> ImageModel? {
+    func loadImage(from asset: PHAsset) -> ImageProcessModel? {
         let imageManager = PHImageManager.default()
         let targetSize = CGSize(width: 300, height: 300)
         
@@ -46,11 +46,11 @@ import Vision
         options.isNetworkAccessAllowed = true
         options.isSynchronous = true
         
-        var imageModel: ImageModel?
+        var imageModel: ImageProcessModel?
         
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { result, _ in
             if let result {
-                imageModel = ImageModel(image: result, creationDate: asset.creationDate)
+                imageModel = ImageProcessModel(image: result, creationDate: asset.creationDate)
             }
         }
         
@@ -74,7 +74,7 @@ import Vision
         }
         
         guard  let newFetchResult else { return }
-        var images: [ImageModel] = []
+        var images: [ImageProcessModel] = []
         
         newFetchResult.enumerateObjects { asset, _, _ in
             if let imageModel = self.loadImage(from: asset) {
@@ -99,7 +99,7 @@ import Vision
         
     }
     
-    private func findSimilarities(images: [ImageModel]) {
+    private func findSimilarities(images: [ImageProcessModel]) {
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         
         for firstIndex in 0..<images.count {

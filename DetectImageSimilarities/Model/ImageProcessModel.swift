@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Vision
 
-class ImageModel {
+class ImageProcessModel {
     let id: UUID = UUID()
     let image: UIImage
     let creationDate: Date?
