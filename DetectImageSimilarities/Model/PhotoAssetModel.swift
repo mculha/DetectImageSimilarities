@@ -9,7 +9,7 @@ import Foundation
 import Photos
 
 
-struct PhotoAsset: Identifiable {
+struct PhotoAssetModel: Identifiable {
     var id: String { identifier }
     var identifier: String = UUID().uuidString
     var index: Int?
@@ -63,13 +63,13 @@ struct PhotoAsset: Identifiable {
     }
 }
 
-extension PhotoAsset: Equatable {
-    static func ==(lhs: PhotoAsset, rhs: PhotoAsset) -> Bool {
+extension PhotoAssetModel: Equatable {
+    static func ==(lhs: PhotoAssetModel, rhs: PhotoAssetModel) -> Bool {
         (lhs.identifier == rhs.identifier) && (lhs.isFavorite == rhs.isFavorite)
     }
 }
 
-extension PhotoAsset: Hashable {
+extension PhotoAssetModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
