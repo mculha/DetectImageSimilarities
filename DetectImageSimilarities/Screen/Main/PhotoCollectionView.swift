@@ -30,8 +30,8 @@ struct PhotoCollectionView: View {
             VStack {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
-                        ForEach(viewModel.similarPhotos, id: \.self) { asset in
-                            Image(uiImage: asset)
+                        ForEach(viewModel.photos) { photo in
+                            Image(uiImage: photo.thumbnail)
                                 .frame(width: Self.itemSize.width, height: Self.itemSize.height)
                                 .clipped()
                                 .cornerRadius(Self.itemCornerRadius)

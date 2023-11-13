@@ -12,7 +12,7 @@ import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
         
-    var similarPhotos: [UIImage] = []
+    var photos: [ImageModel] = []
     
     @ObservationIgnored
     private var photosPermission: PermissionProtocol = PhotosPermission()
@@ -110,8 +110,7 @@ import Vision
 
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
                     if distance == 0 {
-                        self.similarPhotos.append(source.image)
-                        self.similarPhotos.append(destination.image)
+                        self.photos.append(ImageModel(images: [source, destination], thumbnail: source.image))
                     }
                 }
             }
