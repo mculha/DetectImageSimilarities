@@ -13,7 +13,3 @@ protocol PermissionProtocol {
     
 }
 
-enum AuthorizationStatus {
-    case authorized
-    case denied
-}

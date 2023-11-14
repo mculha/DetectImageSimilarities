@@ -13,6 +13,7 @@ import Vision
 @Observable final class PhotoCollectionViewModel: NSObject {
         
     var photos: [ImageModel] = []
+    var state: ProcessingState = .ready
     
     @ObservationIgnored
     private var photosPermission: PermissionProtocol = PhotosPermission()
