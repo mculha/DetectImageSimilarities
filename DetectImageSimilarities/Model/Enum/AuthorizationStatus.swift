@@ -9,5 +9,6 @@ import Foundation
 
 enum AuthorizationStatus {
     case authorized
+    case limited
     case denied
 }

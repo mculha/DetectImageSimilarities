@@ -29,7 +29,7 @@ import Vision
     func requestPhotoAccess() async {
         let status = await photosPermission.requestAuthorization()
         
-        if status == .authorized {
+        if status != .denied {
             refreshPhotoAssets()
         } else {
             //TODO Handle denied case
