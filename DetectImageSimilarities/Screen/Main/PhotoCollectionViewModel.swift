@@ -30,9 +30,9 @@ import Vision
         let status = await photosPermission.requestAuthorization()
         
         if status != .denied {
-            refreshPhotoAssets()
+            self.refreshPhotoAssets()
         } else {
-            //TODO Handle denied case
+            self.state = .permissionRequired
         }
     }
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProcessingState {
+enum ProcessingState: Equatable {
     case permissionRequired
     case ready
     case preparing
