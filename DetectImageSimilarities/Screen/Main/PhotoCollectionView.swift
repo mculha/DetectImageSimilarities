@@ -62,6 +62,8 @@ struct PhotoCollectionView: View {
 
 
 struct PermissionView: View {
+    @Environment(\.openURL) var openURL
+    
     var body: some View {
         VStack {
             Image(.photosNeedPermission)
@@ -84,7 +86,7 @@ struct PermissionView: View {
             Spacer()
             
             Button {
-                // todo - Build Here
+                openURL(URL(string: UIApplication.openSettingsURLString)!)
             } label: {
                 Text("Grant Access")
                     .font(.system(size: 16, weight: .semibold))
