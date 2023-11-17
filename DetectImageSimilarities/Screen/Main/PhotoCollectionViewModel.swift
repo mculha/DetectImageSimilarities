@@ -123,7 +123,6 @@ import Vision
         }
         queue.sync(flags: .barrier) {
             //TODO - Build Here
-            print("Deneme \(self.photos)")
         }
     }
     
