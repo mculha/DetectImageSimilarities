@@ -12,7 +12,7 @@ import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
         
-    var photos: [ImageModel] = []
+    var photos: [UUID: ImageModel] = [:]
     var state: ProcessingState = .ready
     
     @ObservationIgnored
@@ -111,13 +111,19 @@ import Vision
 
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
                     if distance == 0 {
-                        self.photos.append(ImageModel(images: [source, destination], thumbnail: source.image))
+                        if let _ = self.photos[source.id] {
+                            self.photos[source.id]?.images.append(destination)
+                        } else {
+                            self.photos[source.id] = ImageModel(images: [source, destination], thumbnail: source.image)
+                        }
                     }
                 }
+                
             }
         }
         queue.sync(flags: .barrier) {
             //TODO - Build Here
+            print("Deneme \(self.photos)")
         }
     }
     

@@ -10,6 +10,6 @@ import UIKit
 
 struct ImageModel: Identifiable {
     let id: UUID = UUID()
-    let images: [ImageProcessModel]
+    var images: [ImageProcessModel]
     let thumbnail: UIImage
 }
