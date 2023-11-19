@@ -16,6 +16,7 @@
 		E98CA68D2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA68C2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift */; };
 		E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */; };
 		E98CA6932AEC575E00BC95BC /* PhotosPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */; };
+		E98F7D922B0A6BBB00DECD57 /* PermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F7D912B0A6BBB00DECD57 /* PermissionView.swift */; };
 		E9A2E7CE2AFC20A700323ECD /* ImageProcessModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A2E7CD2AFC20A700323ECD /* ImageProcessModel.swift */; };
 		E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */; };
 		E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D991452B02B8F7006EB256 /* ImageModel.swift */; };
@@ -34,6 +35,7 @@
 		E98CA68C2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewModel.swift; sourceTree = "<group>"; };
 		E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionProtocol.swift; sourceTree = "<group>"; };
 		E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosPermission.swift; sourceTree = "<group>"; };
+		E98F7D912B0A6BBB00DECD57 /* PermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionView.swift; sourceTree = "<group>"; };
 		E9A2E7CD2AFC20A700323ECD /* ImageProcessModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessModel.swift; sourceTree = "<group>"; };
 		E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Array.swift"; sourceTree = "<group>"; };
 		E9D991452B02B8F7006EB256 /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		E98CA68A2AEC4AB500BC95BC /* Screen */ = {
 			isa = PBXGroup;
 			children = (
+				E98F7D902B0A6BB000DECD57 /* Permission */,
 				E98CA68B2AEC4ADB00BC95BC /* Main */,
 			);
 			path = Screen;
@@ -140,6 +143,14 @@
 			children = (
 				E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */,
 				E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */,
+			);
+			path = Permission;
+			sourceTree = "<group>";
+		};
+		E98F7D902B0A6BB000DECD57 /* Permission */ = {
+			isa = PBXGroup;
+			children = (
+				E98F7D912B0A6BBB00DECD57 /* PermissionView.swift */,
 			);
 			path = Permission;
 			sourceTree = "<group>";
@@ -235,6 +246,7 @@
 				E9A2E7CE2AFC20A700323ECD /* ImageProcessModel.swift in Sources */,
 				E9D9914B2B02BAD6006EB256 /* AuthorizationStatus.swift in Sources */,
 				E98CA6932AEC575E00BC95BC /* PhotosPermission.swift in Sources */,
+				E98F7D922B0A6BBB00DECD57 /* PermissionView.swift in Sources */,
 				E90118452AEB09FE00C30CD9 /* PhotoCollectionView.swift in Sources */,
 				E90118432AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift in Sources */,
 				E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */,
