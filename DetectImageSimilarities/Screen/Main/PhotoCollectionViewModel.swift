@@ -15,6 +15,7 @@ import Vision
     var photos: [UUID: ImageModel] = [:]
     var state: ProcessingState = .ready
     
+    var presentPermissionRequired: Bool = false
     @ObservationIgnored
     private var photosPermission: PermissionProtocol = PhotosPermission()
     @ObservationIgnored
@@ -33,6 +34,7 @@ import Vision
             self.refreshPhotoAssets()
         } else {
             self.state = .permissionRequired
+            self.presentPermissionRequired = true
         }
     }
     

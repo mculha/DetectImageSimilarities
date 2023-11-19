@@ -10,7 +10,7 @@ import Photos
 
 struct PhotoCollectionView: View {
     @State private var viewModel: PhotoCollectionViewModel = .init(smartAlbum: .smartAlbumUserLibrary)
-
+    
     
     @Environment(\.displayScale) private var displayScale
     private static let itemSpacing = 12.0
@@ -27,32 +27,32 @@ struct PhotoCollectionView: View {
     
     var body: some View {
         NavigationStack {
-            if viewModel.state == .permissionRequired {
-                PermissionView()
-            } else {
-                VStack {
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
-                            ForEach(Array(viewModel.photos.keys), id: \.self) { key in
-                                if let thumbnail = viewModel.photos[key]?.thumbnail {
-                                    Image(uiImage: thumbnail)
-                                        .frame(width: Self.itemSize.width, height: Self.itemSize.height)
-                                        .clipped()
-                                        .cornerRadius(Self.itemCornerRadius)
-                                    
-                                }
+            VStack {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
+                        ForEach(Array(viewModel.photos.keys), id: \.self) { key in
+                            if let thumbnail = viewModel.photos[key]?.thumbnail {
+                                Image(uiImage: thumbnail)
+                                    .frame(width: Self.itemSize.width, height: Self.itemSize.height)
+                                    .clipped()
+                                    .cornerRadius(Self.itemCornerRadius)
                                 
                             }
+                            
                         }
                     }
                 }
-                .task {
-                    await viewModel.requestPhotoAccess()
-                }
-                .padding()
-                .navigationTitle("Photos")
+            }
+            .task {
+                await viewModel.requestPhotoAccess()
+            }
+            .padding()
+            .navigationTitle("Photos")
+            .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
+                PermissionView()
             }
         }
+        
     }
 }
 
@@ -96,11 +96,11 @@ struct PermissionView: View {
                     .foregroundStyle(.photoGrandAccessText)
                     .clipShape(Capsule())
                     .padding(.horizontal, 25)
-                    
+                
             }
             
             Spacer()
-
+            
         }
     }
 }
