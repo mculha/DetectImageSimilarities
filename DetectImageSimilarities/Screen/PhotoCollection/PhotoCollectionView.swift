@@ -31,14 +31,17 @@ struct PhotoCollectionView: View {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
                         ForEach(Array(viewModel.photos.keys), id: \.self) { key in
-                            if let thumbnail = viewModel.photos[key]?.thumbnail {
-                                Image(uiImage: thumbnail)
-                                    .frame(width: Self.itemSize.width, height: Self.itemSize.height)
-                                    .clipped()
-                                    .cornerRadius(Self.itemCornerRadius)
-                                
+                            if let model = viewModel.photos[key] {
+                                NavigationLink {
+                                    PhotoCollectionDetailView(viewModel: .init(imageModel: model))
+                                } label: {
+                                    Image(uiImage: model.thumbnail)
+                                        .frame(width: Self.itemSize.width, height: Self.itemSize.height)
+                                        .clipped()
+                                        .cornerRadius(Self.itemCornerRadius)
+                                    
+                                }
                             }
-                            
                         }
                     }
                 }

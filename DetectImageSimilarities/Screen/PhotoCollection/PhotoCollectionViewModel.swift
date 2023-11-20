@@ -28,6 +28,7 @@ import Vision
     }
     
     func requestPhotoAccess() async {
+        guard self.photos.isEmpty else { return }
         let status = await photosPermission.requestAuthorization()
         
         if status != .denied {
