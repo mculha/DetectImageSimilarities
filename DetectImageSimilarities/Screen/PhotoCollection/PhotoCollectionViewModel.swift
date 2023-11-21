@@ -12,7 +12,7 @@ import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
         
-    var photos: [UUID: ImageModel] = [:]
+    var photos: [ImageModel] = []
     var state: ProcessingState = .ready
     
     var presentPermissionRequired: Bool = false
@@ -102,10 +102,10 @@ import Vision
         }
         
     }
-    
+
     private func findSimilarities(images: [ImageProcessModel]) {
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-        
+
         for firstIndex in 0..<images.count {
             queue.async {
                 for secondIndex in (firstIndex + 1)..<images.count {
@@ -114,18 +114,29 @@ import Vision
 
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
                     if distance == 0 {
-                        if let _ = self.photos[source.id] {
-                            self.photos[source.id]?.images.append(destination)
-                        } else {
-                            self.photos[source.id] = ImageModel(images: [source, destination], thumbnail: source.image)
-                        }
+                        self.appendImage(source: source, destination: destination)
                     }
                 }
-                
             }
         }
+        
         queue.sync(flags: .barrier) {
             //TODO - Build Here
+        }
+    }
+    let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
+
+    private func appendImage(source: ImageProcessModel, destination: ImageProcessModel) {
+        synchronizeQueue.async {
+            
+            if let imageModel = self.photos.filter({ $0.imageIds.contains(source.id) || $0.imageIds.contains(destination.id) }).first {
+                if !imageModel.imageIds.contains(destination.id) {
+                    imageModel.images.append(destination)
+                    imageModel.imageIds.insert(destination.id)
+                }
+            } else {
+                self.photos.append(.init(imageIds: [source.id, destination.id], images: [source, destination], thumbnail: source.image))
+            }
         }
     }
     

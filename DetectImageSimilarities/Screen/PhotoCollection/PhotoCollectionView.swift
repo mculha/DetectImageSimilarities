@@ -30,18 +30,18 @@ struct PhotoCollectionView: View {
             VStack {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Self.itemSpacing) {
-                        ForEach(Array(viewModel.photos.keys), id: \.self) { key in
-                            if let model = viewModel.photos[key] {
-                                NavigationLink {
-                                    PhotoCollectionDetailView(viewModel: .init(imageModel: model))
-                                } label: {
-                                    Image(uiImage: model.thumbnail)
-                                        .frame(width: Self.itemSize.width, height: Self.itemSize.height)
-                                        .clipped()
-                                        .cornerRadius(Self.itemCornerRadius)
-                                    
-                                }
+                        ForEach(Array(viewModel.photos), id: \.id) { model in
+                            
+                            NavigationLink {
+                                PhotoCollectionDetailView(viewModel: .init(imageModel: model))
+                            } label: {
+                                Image(uiImage: model.thumbnail)
+                                    .frame(width: Self.itemSize.width, height: Self.itemSize.height)
+                                    .clipped()
+                                    .cornerRadius(Self.itemCornerRadius)
+                                
                             }
+                            
                         }
                     }
                 }
@@ -51,6 +51,7 @@ struct PhotoCollectionView: View {
             }
             .padding()
             .navigationTitle("Photos")
+            .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                 PermissionView()
             }

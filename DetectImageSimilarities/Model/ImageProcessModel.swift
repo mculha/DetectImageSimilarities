@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Vision
 
-class ImageProcessModel {
+class ImageProcessModel: Identifiable {
     let id: UUID = UUID()
     let image: UIImage
     let creationDate: Date?
@@ -20,4 +20,12 @@ class ImageProcessModel {
         self.creationDate = creationDate
         self.observation = observation
     }
+}
+
+extension ImageProcessModel: Equatable {
+    
+    static func == (lhs: ImageProcessModel, rhs: ImageProcessModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
 }

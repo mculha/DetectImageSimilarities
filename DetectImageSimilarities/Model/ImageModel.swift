@@ -8,8 +8,15 @@
 import Foundation
 import UIKit
 
-struct ImageModel: Identifiable {
+class ImageModel: Identifiable {
     let id: UUID = UUID()
+    var imageIds: Set<UUID> = .init()
     var images: [ImageProcessModel]
     let thumbnail: UIImage
+    
+    init(imageIds: Set<UUID>, images: [ImageProcessModel], thumbnail: UIImage) {
+        self.imageIds = imageIds
+        self.images = images
+        self.thumbnail = thumbnail
+    }
 }
