@@ -23,7 +23,7 @@ import Vision
     @ObservationIgnored
     private var fetchResult = PHFetchResult<PHAsset>()
     @ObservationIgnored
-    var images: [ImageProcessModel] = []
+    var images: [UUID: ImageProcessModel] = [:]
     
     init(smartAlbum smartAlbumType: PHAssetCollectionSubtype) {
         self.smartAlbumType = smartAlbumType
@@ -82,11 +82,11 @@ import Vision
         guard  let newFetchResult else { return }
         newFetchResult.enumerateObjects { asset, _, _ in
             if let imageModel = self.loadImage(from: asset) {
-                self.images.append(imageModel)
+                self.images[imageModel.id] = imageModel
             }
         }
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-        let subImageArrays = images.splitInSubArrays(into: 4)
+        let subImageArrays = Array(images.values).splitInSubArrays(into: 4)
         
         for subImageArray in subImageArrays {
             queue.async {
@@ -97,13 +97,14 @@ import Vision
         }
         
         queue.sync(flags: .barrier) {
-            self.findSimilarities(images: images)
+            self.findSimilarities(images: Array(images.values))
         }
         
     }
 
     private func findSimilarities(images: [ImageProcessModel]) {
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+        let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
 
         for firstIndex in 0..<images.count {
             queue.async {
@@ -114,16 +115,37 @@ import Vision
                     
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
                     if distance == 0 {
-                        source.sameImageIds.insert(destination.id)
-                        destination.sameImageIds.insert(source.id)
+                        synchronizeQueue.async {
+                            source.sameImageIds.insert(destination.id)
+                            destination.sameImageIds.insert(source.id)
+                        }
                     }
                 }
-                
             }
         }
         queue.sync(flags: .barrier) {
-            //TODO - Build Here
-            print("Denem \(self.images)")
+            let filteredImages = self.images.filter { !$0.value.sameImageIds.isEmpty }
+            for filteredImage in filteredImages {
+                let sameImages = filteredImages.filter { model in
+                    var firstSet = model.value.sameImageIds
+                    firstSet.insert(model.value.id)
+                    
+                    var secondSet = filteredImage.value.sameImageIds
+                    secondSet.insert(filteredImage.value.id)
+                    
+                    return firstSet == secondSet
+                }
+                var processModels: [ImageProcessModel] = []
+                for sameImage in sameImages {
+                    processModels.append(sameImage.value)
+                }
+                if !processModels.isEmpty {
+                    self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
+                }
+            }
+            
+            
+            print(self.photos)
         }
         
     }

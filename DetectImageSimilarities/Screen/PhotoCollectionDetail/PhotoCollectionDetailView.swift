@@ -12,10 +12,10 @@ struct PhotoCollectionDetailView: View {
     let viewModel: PhotoCollectionDetailViewModel
     
     var body: some View {
-        Text("Number of Images: \(viewModel.imageModel.imageIds.count)")
+        Text("Number of Images: \(viewModel.imageModel.images.count)")
     }
 }
 
 #Preview {
-    PhotoCollectionDetailView(viewModel: .init(imageModel: .init(imageIds: [], images: [], thumbnail: UIImage())))
+    PhotoCollectionDetailView(viewModel: .init(imageModel: .init(images: [], thumbnail: UIImage())))
 }

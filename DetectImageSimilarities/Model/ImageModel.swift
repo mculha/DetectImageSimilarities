@@ -10,13 +10,18 @@ import UIKit
 
 class ImageModel: Identifiable {
     let id: UUID = UUID()
-    var imageIds: Set<UUID> = .init()
     var images: [ImageProcessModel]
     let thumbnail: UIImage
     
-    init(imageIds: Set<UUID>, images: [ImageProcessModel], thumbnail: UIImage) {
-        self.imageIds = imageIds
+    init(images: [ImageProcessModel], thumbnail: UIImage) {
         self.images = images
         self.thumbnail = thumbnail
+    }
+}
+
+extension ImageModel: Equatable {
+    
+    static func == (lhs: ImageModel, rhs: ImageModel) -> Bool {
+        return lhs.id == rhs.id
     }
 }
