@@ -22,6 +22,8 @@ import Vision
     private var smartAlbumType: PHAssetCollectionSubtype
     @ObservationIgnored
     private var fetchResult = PHFetchResult<PHAsset>()
+    @ObservationIgnored
+    var images: [ImageProcessModel] = []
     
     init(smartAlbum smartAlbumType: PHAssetCollectionSubtype) {
         self.smartAlbumType = smartAlbumType
@@ -78,13 +80,10 @@ import Vision
         }
         
         guard  let newFetchResult else { return }
-        var images: [ImageProcessModel] = []
-        
         newFetchResult.enumerateObjects { asset, _, _ in
             if let imageModel = self.loadImage(from: asset) {
-                images.append(imageModel)
+                self.images.append(imageModel)
             }
-
         }
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         let subImageArrays = images.splitInSubArrays(into: 4)
@@ -111,33 +110,22 @@ import Vision
                 for secondIndex in (firstIndex + 1)..<images.count {
                     let destination = images[secondIndex]
                     let source = images[firstIndex]
-
+                    
+                    
                     let distance = self.findDistance(source: source.observation, destination: destination.observation)
                     if distance == 0 {
-                        self.appendImage(source: source, destination: destination)
+                        source.sameImageIds.insert(destination.id)
+                        destination.sameImageIds.insert(source.id)
                     }
                 }
+                
             }
         }
-        
         queue.sync(flags: .barrier) {
             //TODO - Build Here
+            print("Denem \(self.images)")
         }
-    }
-    let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
-
-    private func appendImage(source: ImageProcessModel, destination: ImageProcessModel) {
-        synchronizeQueue.async {
-            
-            if let imageModel = self.photos.filter({ $0.imageIds.contains(source.id) || $0.imageIds.contains(destination.id) }).first {
-                if !imageModel.imageIds.contains(destination.id) {
-                    imageModel.images.append(destination)
-                    imageModel.imageIds.insert(destination.id)
-                }
-            } else {
-                self.photos.append(.init(imageIds: [source.id, destination.id], images: [source, destination], thumbnail: source.image))
-            }
-        }
+        
     }
     
     private func findDistance(source: VNFeaturePrintObservation?, destination: VNFeaturePrintObservation?) -> Float {

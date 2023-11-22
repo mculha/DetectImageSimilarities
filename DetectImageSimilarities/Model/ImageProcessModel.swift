@@ -14,6 +14,7 @@ class ImageProcessModel: Identifiable {
     let image: UIImage
     let creationDate: Date?
     var observation: VNFeaturePrintObservation? = nil
+    var sameImageIds: Set<UUID> = .init()
     
     init(image: UIImage, creationDate: Date?, observation: VNFeaturePrintObservation? = nil) {
         self.image = image
