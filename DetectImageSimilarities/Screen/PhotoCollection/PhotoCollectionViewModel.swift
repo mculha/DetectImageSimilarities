@@ -124,28 +124,23 @@ import Vision
             }
         }
         queue.sync(flags: .barrier) {
-            let filteredImages = self.images.filter { !$0.value.sameImageIds.isEmpty }
-            for filteredImage in filteredImages {
-                let sameImages = filteredImages.filter { model in
-                    var firstSet = model.value.sameImageIds
-                    firstSet.insert(model.value.id)
-                    
-                    var secondSet = filteredImage.value.sameImageIds
-                    secondSet.insert(filteredImage.value.id)
-                    
-                    return firstSet == secondSet
+            let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
+                .map { key, value in
+                    var set: Set<UUID> = value.sameImageIds
+                    set.insert(key)
+                    return set
                 }
+            
+            let filteredImages = Array(Set(filteredImageArray))
+            for imageIDs in filteredImages {
                 var processModels: [ImageProcessModel] = []
-                for sameImage in sameImages {
-                    processModels.append(sameImage.value)
+                for imageID in imageIDs {
+                    if let processImage = self.images[imageID] {
+                        processModels.append(processImage)
+                    }
                 }
-                if !processModels.isEmpty {
-                    self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
-                }
+                self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
             }
-            
-            
-            print(self.photos)
         }
         
     }
