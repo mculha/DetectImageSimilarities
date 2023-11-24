@@ -55,7 +55,7 @@ struct PhotoCollectionView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, maxHeight: 50)
-                        .background(Color(.primary))
+                        .background(Color(.appPrimary))
                         .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
             }
