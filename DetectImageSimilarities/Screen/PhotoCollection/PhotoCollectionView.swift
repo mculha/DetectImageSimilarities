@@ -45,9 +45,19 @@ struct PhotoCollectionView: View {
                         }
                     }
                 }
-            }
-            .task {
-                await viewModel.requestPhotoAccess()
+                
+                Button {
+                    Task {
+                        await viewModel.requestPhotoAccess()
+                    }
+                } label: {
+                    Text("Start")
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                        .background(Color(.primary))
+                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                }
             }
             .padding()
             .navigationTitle("Photos")
