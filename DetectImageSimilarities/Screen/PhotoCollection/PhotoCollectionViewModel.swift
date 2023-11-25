@@ -30,12 +30,9 @@ import Vision
     }
     
     func requestPhotoAccess() async {
-        guard self.photos.isEmpty else { return }
         let status = await photosPermission.requestAuthorization()
         
-        if status != .denied {
-            self.refreshPhotoAssets()
-        } else {
+        if status == .denied {
             self.state = .permissionRequired
             self.presentPermissionRequired = true
         }
@@ -70,7 +67,7 @@ import Vision
         return request.results?.first as? VNFeaturePrintObservation
     }
     
-    private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
+    func fetchPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
         var newFetchResult = fetchResult
         
         if newFetchResult == nil {

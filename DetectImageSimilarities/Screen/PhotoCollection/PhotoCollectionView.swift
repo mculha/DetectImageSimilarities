@@ -47,9 +47,7 @@ struct PhotoCollectionView: View {
                 }
                 
                 Button {
-                    Task {
-                        await viewModel.requestPhotoAccess()
-                    }
+                    Task { self.viewModel.fetchPhotoAssets() }
                 } label: {
                     Text("Start")
                         .fontWeight(.bold)
@@ -58,12 +56,18 @@ struct PhotoCollectionView: View {
                         .background(Color(.appPrimary))
                         .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
+                .allowsHitTesting(viewModel.state == .ready)
             }
             .padding()
             .navigationTitle("Photos")
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                 PermissionView()
+            }
+            .onAppear {
+                Task {
+                    await viewModel.requestPhotoAccess()
+                }
             }
         }
         
