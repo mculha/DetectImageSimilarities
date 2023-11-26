@@ -47,7 +47,7 @@ struct PhotoCollectionView: View {
                 }
                 
                 Button {
-                    Task { self.viewModel.fetchPhotoAssets() }
+                    self.viewModel.fetchPhotoAssets()
                 } label: {
                     Text("Start")
                         .fontWeight(.bold)
@@ -59,7 +59,7 @@ struct PhotoCollectionView: View {
                 .allowsHitTesting(viewModel.state == .ready)
             }
             .padding()
-            .navigationTitle("Photos")
+            .navigationTitle(viewModel.state.title)
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                 PermissionView()

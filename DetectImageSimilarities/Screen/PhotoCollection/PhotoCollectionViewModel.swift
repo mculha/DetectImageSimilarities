@@ -68,41 +68,64 @@ import Vision
     }
     
     func fetchPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
-        var newFetchResult = fetchResult
-        
-        if newFetchResult == nil {
-            let fetchOptions = PHFetchOptions()
-            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-            newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-        }
-        
-        guard  let newFetchResult else { return }
-        newFetchResult.enumerateObjects { asset, _, _ in
-            if let imageModel = self.loadImage(from: asset) {
-                self.images[imageModel.id] = imageModel
+        let photosQueue = DispatchQueue(label: "photosQueue")
+        photosQueue.async {
+            var newFetchResult = fetchResult
+            
+            if newFetchResult == nil {
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+                newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
             }
-        }
-        let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-        let subImageArrays = Array(images.values).splitInSubArrays(into: 4)
-        
-        for subImageArray in subImageArrays {
-            queue.async {
-                for imageModel in subImageArray {
-                    imageModel.observation = self.observation(image: imageModel.image)
+            
+            guard let newFetchResult else {
+                self.state = .empty
+                return
+            }
+            var fetchedAmount: Int = 0
+            let total: Int = newFetchResult.count
+            newFetchResult.enumerateObjects { asset, _, _ in
+                if let imageModel = self.loadImage(from: asset) {
+                    self.images[imageModel.id] = imageModel
                 }
+                
+                fetchedAmount += 1
+                self.state = .fetchingPhotos(fetched: fetchedAmount, total: total)
+            }
+            guard !self.images.isEmpty else {
+                self.state = .empty
+                return
+            }
+            
+            let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
+            let subImageArrays = Array(self.images.values).splitInSubArrays(into: 4)
+            
+            var preparedAmount: Int = 0
+            for subImageArray in subImageArrays {
+                queue.async {
+                    for imageModel in subImageArray {
+                        imageModel.observation = self.observation(image: imageModel.image)
+                        
+                        preparedAmount += 1
+                        self.state = .preparing(prepared: preparedAmount, total: total)
+                        
+                    }
+                }
+                
+            }
+            
+            queue.sync(flags: .barrier) {
+                self.findSimilarities(images: Array(self.images.values))
             }
         }
-        
-        queue.sync(flags: .barrier) {
-            self.findSimilarities(images: Array(images.values))
-        }
-        
     }
 
     private func findSimilarities(images: [ImageProcessModel]) {
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
 
+        let total: Int = images.count
+        var processingAmount: Int = 0
         for firstIndex in 0..<images.count {
             queue.async {
                 for secondIndex in (firstIndex + 1)..<images.count {
@@ -117,6 +140,12 @@ import Vision
                             destination.sameImageIds.insert(source.id)
                         }
                     }
+                    
+                }
+                
+                processingAmount += 1
+                if processingAmount % 50 == 0 {
+                    self.state = .processing(processed: processingAmount, total: total)
                 }
             }
         }
