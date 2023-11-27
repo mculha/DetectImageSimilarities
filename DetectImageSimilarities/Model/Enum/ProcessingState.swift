@@ -22,11 +22,14 @@ enum ProcessingState: Equatable {
         case .permissionRequired, .ready, .empty, .done, .error:
             return "Photos"
         case .fetchingPhotos(let fetched, let total):
-            return String(format: "Fetching Photos %d/%d", fetched, total)
+            let percentage: Int = (100 * fetched) / total
+            return String(format: "Fetching Photos %d%%", percentage)
         case .preparing(let prepared, let total):
-            return String(format: "Preparing Photos %d/%d", prepared, total)
+            let percentage: Int = (100 * prepared) / total
+            return String(format: "Preparing Photos %d%%", percentage)
         case .processing(let processed, let total):
-            return String(format: "Processing Photos %d/%d", processed, total)
+            let percentage: Int = (100 * processed) / total
+            return String(format: "Processing Photos %d%%", percentage)
         }
     }
 }

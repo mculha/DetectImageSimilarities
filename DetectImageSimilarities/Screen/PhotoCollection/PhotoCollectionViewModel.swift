@@ -150,6 +150,7 @@ import Vision
             }
         }
         queue.sync(flags: .barrier) {
+            self.state = .processing(processed: total, total: total)
             let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
                 .map { key, value in
                     var set: Set<UUID> = value.sameImageIds
