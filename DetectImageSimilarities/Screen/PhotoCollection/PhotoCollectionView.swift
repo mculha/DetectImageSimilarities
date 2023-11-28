@@ -70,14 +70,26 @@ struct PhotoView: View {
     let model: ImageModel
     
     var body: some View {
-        GeometryReader { gp in
-            Image(uiImage: model.thumbnail)
-                .resizable()
-                .scaledToFill()
-                .frame(height: gp.size.width)
+        ZStack(alignment: .bottomTrailing) {
+            GeometryReader { gp in
+                
+                Image(uiImage: model.thumbnail)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: gp.size.width)
+            }
+            
+            Text(String(model.images.count))
+                .font(.system(size: 10))
+                .foregroundStyle(.white)
+                .frame(width: 20, height: 20)
+                .background(.black.opacity(0.5))
+                .clipShape(Circle())
+                .padding([.bottom, .trailing], 5)
         }
         .clipped()
         .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 5))
+        .clipShape(RoundedRectangle(cornerRadius: 7))
+        .shadow(radius: 1)
     }
 }
