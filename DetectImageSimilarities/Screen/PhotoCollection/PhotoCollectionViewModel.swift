@@ -111,7 +111,6 @@ import Vision
                         
                     }
                 }
-                
             }
             
             queue.sync(flags: .barrier) {
