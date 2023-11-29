@@ -13,7 +13,6 @@ import Vision
 @Observable final class PhotoCollectionViewModel: NSObject {
         
     var photos: [ImageModel] = []
-    var state: ProcessingState = .ready
     
     var presentPermissionRequired: Bool = false
     @ObservationIgnored
@@ -33,7 +32,6 @@ import Vision
         let status = await photosPermission.requestAuthorization()
         
         if status == .denied {
-            self.state = .permissionRequired
             self.presentPermissionRequired = true
         }
     }
@@ -79,36 +77,24 @@ import Vision
             }
             
             guard let newFetchResult else {
-                self.state = .empty
                 return
             }
-            var fetchedAmount: Int = 0
-            let total: Int = newFetchResult.count
             newFetchResult.enumerateObjects { asset, _, _ in
                 if let imageModel = self.loadImage(from: asset) {
                     self.images[imageModel.id] = imageModel
                 }
-                
-                fetchedAmount += 1
-                self.state = .fetchingPhotos(fetched: fetchedAmount, total: total)
             }
             guard !self.images.isEmpty else {
-                self.state = .empty
                 return
             }
             
             let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
             let subImageArrays = Array(self.images.values).splitInSubArrays(into: 4)
             
-            var preparedAmount: Int = 0
             for subImageArray in subImageArrays {
                 queue.async {
                     for imageModel in subImageArray {
                         imageModel.observation = self.observation(image: imageModel.image)
-                        
-                        preparedAmount += 1
-                        self.state = .preparing(prepared: preparedAmount, total: total)
-                        
                     }
                 }
             }
@@ -123,8 +109,6 @@ import Vision
         let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
         let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
 
-        let total: Int = images.count
-        var processingAmount: Int = 0
         for firstIndex in 0..<images.count {
             queue.async {
                 for secondIndex in (firstIndex + 1)..<images.count {
@@ -142,14 +126,9 @@ import Vision
                     
                 }
                 
-                processingAmount += 1
-                if processingAmount % 50 == 0 {
-                    self.state = .processing(processed: processingAmount, total: total)
-                }
             }
         }
         queue.sync(flags: .barrier) {
-            self.state = .processing(processed: total, total: total)
             let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
                 .map { key, value in
                     var set: Set<UUID> = value.sameImageIds

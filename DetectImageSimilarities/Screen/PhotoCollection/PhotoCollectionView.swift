@@ -24,9 +24,7 @@ struct PhotoCollectionView: View {
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
                         ForEach(Array(viewModel.photos), id: \.id) { model in
-                            NavigationLink {
-                                PhotoCollectionDetailView(viewModel: .init(imageModel: model))
-                            } label: {
+                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
                                 PhotoView(model: model)
                             }
                         }
@@ -43,10 +41,9 @@ struct PhotoCollectionView: View {
                         .background(Color(.appPrimary))
                         .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
-                .allowsHitTesting(viewModel.state == .ready)
             }
             .padding()
-            .navigationTitle(viewModel.state.title)
+            .navigationTitle("Duplicate Photos")
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                 PermissionView()
