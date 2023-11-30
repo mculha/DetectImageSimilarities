@@ -23,6 +23,7 @@
 		E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */; };
 		E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D991452B02B8F7006EB256 /* ImageModel.swift */; };
 		E9D9914B2B02BAD6006EB256 /* AuthorizationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D9914A2B02BAD6006EB256 /* AuthorizationStatus.swift */; };
+		E9F3B0E12B18FE9100C44EF2 /* StartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F3B0E02B18FE9100C44EF2 /* StartButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		E9A7F9AB2B00131900BE1119 /* Extension+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Array.swift"; sourceTree = "<group>"; };
 		E9D991452B02B8F7006EB256 /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		E9D9914A2B02BAD6006EB256 /* AuthorizationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStatus.swift; sourceTree = "<group>"; };
+		E9F3B0E02B18FE9100C44EF2 /* StartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 		E90118412AEB09FE00C30CD9 /* DetectImageSimilarities */ = {
 			isa = PBXGroup;
 			children = (
+				E9F3B0DF2B18FE8000C44EF2 /* Custom */,
 				E95FEA382AEDB539003BB115 /* Model */,
 				E98CA68E2AEC56A200BC95BC /* Utility */,
 				E98CA68A2AEC4AB500BC95BC /* Screen */,
@@ -183,6 +186,14 @@
 			path = Enum;
 			sourceTree = "<group>";
 		};
+		E9F3B0DF2B18FE8000C44EF2 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				E9F3B0E02B18FE9100C44EF2 /* StartButton.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -260,6 +271,7 @@
 				E98F7D922B0A6BBB00DECD57 /* PermissionView.swift in Sources */,
 				E90118452AEB09FE00C30CD9 /* PhotoCollectionView.swift in Sources */,
 				E90118432AEB09FE00C30CD9 /* DetectImageSimilaritiesApp.swift in Sources */,
+				E9F3B0E12B18FE9100C44EF2 /* StartButton.swift in Sources */,
 				E98F7D972B0B11BC00DECD57 /* PhotoCollectionDetailViewModel.swift in Sources */,
 				E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */,
 				E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */,

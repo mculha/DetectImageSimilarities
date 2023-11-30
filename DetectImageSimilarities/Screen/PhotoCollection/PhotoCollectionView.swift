@@ -19,41 +19,37 @@ struct PhotoCollectionView: View {
     ]
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                        ForEach(Array(viewModel.photos), id: \.id) { model in
-                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
-                                PhotoView(model: model)
-                            }
-                        }
-                    }
-                }
-                
-                Button {
-                    self.viewModel.fetchPhotoAssets()
-                } label: {
-                    Text("Start")
-                        .fontWeight(.bold)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, maxHeight: 50)
-                        .background(Color(.appPrimary))
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                }
-            }
-            .padding()
-            .navigationTitle("Duplicate Photos")
-            .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
-                PermissionView()
-            }
-            .onAppear {
-                Task {
-                    await viewModel.requestPhotoAccess()
-                }
-            }
-        }
+        StartButton()
+//        NavigationStack {
+//            VStack {
+//                ScrollView(showsIndicators: false) {
+//                    LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
+//                        ForEach(Array(viewModel.photos), id: \.id) { model in
+//                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
+//                                PhotoView(model: model)
+//                            }
+//                        }
+//                    }
+//                }
+//                
+//                Button {
+//                    self.viewModel.fetchPhotoAssets()
+//                } label: {
+//                    
+//                }
+//            }
+//            .padding()
+//            .navigationTitle("Duplicate Photos")
+//            .navigationBarTitleDisplayMode(.inline)
+//            .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
+//                PermissionView()
+//            }
+//            .onAppear {
+//                Task {
+//                    await viewModel.requestPhotoAccess()
+//                }
+//            }
+//        }
         
     }
 }
