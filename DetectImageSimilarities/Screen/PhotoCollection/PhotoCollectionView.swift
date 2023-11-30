@@ -19,38 +19,51 @@ struct PhotoCollectionView: View {
     ]
     
     var body: some View {
-        StartButton()
-//        NavigationStack {
-//            VStack {
-//                ScrollView(showsIndicators: false) {
-//                    LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-//                        ForEach(Array(viewModel.photos), id: \.id) { model in
-//                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
-//                                PhotoView(model: model)
-//                            }
-//                        }
-//                    }
-//                }
-//                
-//                Button {
-//                    self.viewModel.fetchPhotoAssets()
-//                } label: {
-//                    
-//                }
-//            }
-//            .padding()
-//            .navigationTitle("Duplicate Photos")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
-//                PermissionView()
-//            }
-//            .onAppear {
-//                Task {
-//                    await viewModel.requestPhotoAccess()
-//                }
-//            }
-//        }
-        
+        if viewModel.status == .ready {
+            Button {
+                self.viewModel.fetchPhotoAssets()
+            } label: {
+                StartButton()
+            }
+            .id(ProcessStatus.ready.rawValue)
+            .transition(.scale)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation(.linear(duration: 0.5)) {
+                        viewModel.status = .processing
+                    }
+                }
+            }
+        } else if viewModel.status == .processing {
+            StartButton()
+                .id(ProcessStatus.processing.rawValue)
+                .transition(.scale)
+        } else {
+            NavigationStack {
+                VStack {
+                    ScrollView(showsIndicators: false) {
+                        LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
+                            ForEach(Array(viewModel.photos), id: \.id) { model in
+                                NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
+                                    PhotoView(model: model)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .navigationTitle("Duplicate Photos")
+                .navigationBarTitleDisplayMode(.inline)
+                .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
+                    PermissionView()
+                }
+                .onAppear {
+                    Task {
+                        await viewModel.requestPhotoAccess()
+                    }
+                }
+            }
+        }
     }
 }
 

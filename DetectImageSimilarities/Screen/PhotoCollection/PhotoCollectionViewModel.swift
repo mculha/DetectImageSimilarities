@@ -13,6 +13,7 @@ import Vision
 @Observable final class PhotoCollectionViewModel: NSObject {
         
     var photos: [ImageModel] = []
+    var status: ProcessStatus = .ready
     
     var presentPermissionRequired: Bool = false
     @ObservationIgnored
@@ -66,6 +67,7 @@ import Vision
     }
     
     func fetchPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
+        self.status = .processing
         let photosQueue = DispatchQueue(label: "photosQueue")
         photosQueue.async {
             var newFetchResult = fetchResult
@@ -146,6 +148,7 @@ import Vision
                 }
                 self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
             }
+            self.status = .finished
         }
         
     }

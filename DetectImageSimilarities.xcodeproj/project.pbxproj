@@ -24,6 +24,7 @@
 		E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D991452B02B8F7006EB256 /* ImageModel.swift */; };
 		E9D9914B2B02BAD6006EB256 /* AuthorizationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D9914A2B02BAD6006EB256 /* AuthorizationStatus.swift */; };
 		E9F3B0E12B18FE9100C44EF2 /* StartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F3B0E02B18FE9100C44EF2 /* StartButton.swift */; };
+		E9F3B0E32B19120600C44EF2 /* ProcessStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F3B0E22B19120600C44EF2 /* ProcessStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		E9D991452B02B8F7006EB256 /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		E9D9914A2B02BAD6006EB256 /* AuthorizationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStatus.swift; sourceTree = "<group>"; };
 		E9F3B0E02B18FE9100C44EF2 /* StartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButton.swift; sourceTree = "<group>"; };
+		E9F3B0E22B19120600C44EF2 /* ProcessStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessStatus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				E9D9914A2B02BAD6006EB256 /* AuthorizationStatus.swift */,
+				E9F3B0E22B19120600C44EF2 /* ProcessStatus.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				E9D991462B02B8F7006EB256 /* ImageModel.swift in Sources */,
 				E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */,
 				E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */,
+				E9F3B0E32B19120600C44EF2 /* ProcessStatus.swift in Sources */,
 				E95FEA3A2AEDB54C003BB115 /* PhotoAssetModel.swift in Sources */,
 				E98F7D952B0B11AA00DECD57 /* PhotoCollectionDetailView.swift in Sources */,
 				E98CA68D2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift in Sources */,
