@@ -25,6 +25,21 @@ import Vision
     @ObservationIgnored
     var images: [UUID: ImageProcessModel] = [:]
     
+    @ObservationIgnored
+    let readyID: String = "ready"
+    @ObservationIgnored
+    let progressID: String = "progress"
+    @ObservationIgnored
+    let finishedID: String = "finished"
+    
+    private var total = 0
+    var progress: Int = 0 {
+        didSet {
+            let value = (progress * 100) / total
+            self.status = .processing(progress: value)
+        }
+    }
+    
     init(smartAlbum smartAlbumType: PHAssetCollectionSubtype) {
         self.smartAlbumType = smartAlbumType
     }
@@ -67,7 +82,7 @@ import Vision
     }
     
     func fetchPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
-        self.status = .processing
+        self.status = .processing(progress: 0)
         let photosQueue = DispatchQueue(label: "photosQueue")
         photosQueue.async {
             var newFetchResult = fetchResult
@@ -81,12 +96,16 @@ import Vision
             guard let newFetchResult else {
                 return
             }
+            
+            self.total = newFetchResult.count * 3
             newFetchResult.enumerateObjects { asset, _, _ in
                 if let imageModel = self.loadImage(from: asset) {
                     self.images[imageModel.id] = imageModel
                 }
+                self.progress += 1
             }
             guard !self.images.isEmpty else {
+                self.status = .finished
                 return
             }
             
@@ -97,6 +116,7 @@ import Vision
                 queue.async {
                     for imageModel in subImageArray {
                         imageModel.observation = self.observation(image: imageModel.image)
+                        self.progress += 1
                     }
                 }
             }
@@ -127,10 +147,11 @@ import Vision
                     }
                     
                 }
-                
+                self.progress += 1
             }
         }
         queue.sync(flags: .barrier) {
+            self.progress = self.total
             let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
                 .map { key, value in
                     var set: Set<UUID> = value.sameImageIds

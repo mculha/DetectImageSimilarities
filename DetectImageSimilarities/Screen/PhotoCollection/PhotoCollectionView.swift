@@ -19,25 +19,19 @@ struct PhotoCollectionView: View {
     ]
     
     var body: some View {
-        if viewModel.status == .ready {
+        if case .ready = viewModel.status {
             Button {
                 self.viewModel.fetchPhotoAssets()
             } label: {
                 StartButton()
             }
-            .id(ProcessStatus.ready.rawValue)
-            .transition(.scale)
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    withAnimation(.linear(duration: 0.5)) {
-                        viewModel.status = .processing
-                    }
-                }
-            }
-        } else if viewModel.status == .processing {
-            StartButton()
-                .id(ProcessStatus.processing.rawValue)
-                .transition(.scale)
+            .id(viewModel.readyID)
+            .transition(.scale.animation(.easeInOut))
+            
+        } else if case let .processing(progress) = viewModel.status {
+            ProgressView(value: progress)
+                .id(viewModel.progressID)
+                .transition(.scale.animation(.easeInOut))
         } else {
             NavigationStack {
                 VStack {
@@ -63,6 +57,8 @@ struct PhotoCollectionView: View {
                     }
                 }
             }
+            .id(viewModel.finishedID)
+            .transition(.scale.animation(.easeInOut))
         }
     }
 }

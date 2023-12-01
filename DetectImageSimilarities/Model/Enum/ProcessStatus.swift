@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum ProcessStatus: String {
+enum ProcessStatus: Equatable {
     case ready
-    case processing
+    case processing(progress: Int)
     case finished
 }
