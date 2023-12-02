@@ -81,21 +81,13 @@ import Vision
         return request.results?.first as? VNFeaturePrintObservation
     }
     
-    func fetchPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) {
+    func fetchPhotoAssets() {
         self.status = .processing(progress: 0)
         let photosQueue = DispatchQueue(label: "photosQueue")
         photosQueue.async {
-            var newFetchResult = fetchResult
-            
-            if newFetchResult == nil {
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-            }
-            
-            guard let newFetchResult else {
-                return
-            }
+            let fetchOptions = PHFetchOptions()
+            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+            let newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
             
             self.total = newFetchResult.count * 3
             newFetchResult.enumerateObjects { asset, _, _ in

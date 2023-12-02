@@ -20,9 +20,7 @@ struct PhotoCollectionView: View {
     
     var body: some View {
         if case .ready = viewModel.status {
-            Button {
-                self.viewModel.fetchPhotoAssets()
-            } label: {
+            Button(action: self.viewModel.fetchPhotoAssets) {
                 StartButton()
             }
             .id(viewModel.readyID)
