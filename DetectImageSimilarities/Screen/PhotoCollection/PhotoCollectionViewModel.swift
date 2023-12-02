@@ -14,6 +14,7 @@ import Vision
         
     var photos: [ImageModel] = []
     var status: ProcessStatus = .ready
+    var startTitleAnimation: Bool = true
     
     var presentPermissionRequired: Bool = false
     @ObservationIgnored
@@ -84,7 +85,7 @@ import Vision
     func fetchPhotoAssets() {
         self.status = .processing(progress: 0)
         let photosQueue = DispatchQueue(label: "photosQueue")
-        photosQueue.async {
+        photosQueue.asyncAfter(deadline: .now() + 2) {
             let fetchOptions = PHFetchOptions()
             fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
             let newFetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)

@@ -20,16 +20,35 @@ struct PhotoCollectionView: View {
     
     var body: some View {
         if case .ready = viewModel.status {
-            Button(action: self.viewModel.fetchPhotoAssets) {
-                StartButton()
+            VStack(spacing: 60) {
+                Text(viewModel.status.title)
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .foregroundStyle(.blue)
+                
+                Button(action: self.viewModel.fetchPhotoAssets) {
+                    StartButton()
+                }
+                
             }
             .id(viewModel.readyID)
             .transition(.scale.animation(.easeInOut))
             
         } else if case let .processing(progress) = viewModel.status {
-            ProgressView(value: progress)
-                .id(viewModel.progressID)
-                .transition(.scale.animation(.easeInOut))
+            VStack(spacing: 60) {
+                Text(viewModel.status.title)
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .foregroundStyle(.blue)
+                    .opacity(viewModel.startTitleAnimation ? 0.1 : 1.0)
+                    .animation(.easeInOut(duration: 1.0).repeatForever(), value: viewModel.startTitleAnimation)
+                
+                ProgressView(value: progress)
+                
+            }
+            .id(viewModel.progressID)
+            .transition(.scale.animation(.easeInOut))
+            .onAppear {
+                viewModel.startTitleAnimation.toggle()
+            }
         } else {
             NavigationStack {
                 VStack {
