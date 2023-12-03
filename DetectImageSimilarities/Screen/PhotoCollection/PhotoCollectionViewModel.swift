@@ -11,7 +11,7 @@ import UIKit
 import Vision
 
 @Observable final class PhotoCollectionViewModel: NSObject {
-        
+    
     var photos: [ImageModel] = []
     var status: ProcessStatus = .ready
     var startTitleAnimation: Bool = true
@@ -119,51 +119,42 @@ import Vision
             }
         }
     }
-
+    
     private func findSimilarities(images: [ImageProcessModel]) {
-        let queue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
-        let synchronizeQueue = DispatchQueue(label: "synchronizeQueue")
-
         for firstIndex in 0..<images.count {
-            queue.async {
-                for secondIndex in (firstIndex + 1)..<images.count {
-                    let destination = images[secondIndex]
-                    let source = images[firstIndex]
-                    
-                    
-                    let distance = self.findDistance(source: source.observation, destination: destination.observation)
-                    if distance == 0 {
-                        synchronizeQueue.async {
-                            source.sameImageIds.insert(destination.id)
-                            destination.sameImageIds.insert(source.id)
-                        }
-                    }
-                    
+            for secondIndex in (firstIndex + 1)..<images.count {
+                let destination = images[secondIndex]
+                let source = images[firstIndex]
+                
+                
+                let distance = self.findDistance(source: source.observation, destination: destination.observation)
+                if distance == 0 {
+                    source.sameImageIds.insert(destination.id)
+                    destination.sameImageIds.insert(source.id)
                 }
-                self.progress += 1
+                
             }
+            self.progress += 1
         }
-        queue.sync(flags: .barrier) {
-            self.progress = self.total
-            let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
-                .map { key, value in
-                    var set: Set<UUID> = value.sameImageIds
-                    set.insert(key)
-                    return set
-                }
-            
-            let filteredImages = Array(Set(filteredImageArray))
-            for imageIDs in filteredImages {
-                var processModels: [ImageProcessModel] = []
-                for imageID in imageIDs {
-                    if let processImage = self.images[imageID] {
-                        processModels.append(processImage)
-                    }
-                }
-                self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
+        self.progress = self.total
+        let filteredImageArray = self.images.filter { !$0.value.sameImageIds.isEmpty }
+            .map { key, value in
+                var set: Set<UUID> = value.sameImageIds
+                set.insert(key)
+                return set
             }
-            self.status = .finished
+        
+        let filteredImages = Array(Set(filteredImageArray))
+        for imageIDs in filteredImages {
+            var processModels: [ImageProcessModel] = []
+            for imageID in imageIDs {
+                if let processImage = self.images[imageID] {
+                    processModels.append(processImage)
+                }
+            }
+            self.photos.append(.init(images: processModels, thumbnail: processModels.first!.image))
         }
+        self.status = .finished
         
     }
     
