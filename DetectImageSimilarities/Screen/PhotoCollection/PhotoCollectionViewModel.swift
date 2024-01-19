@@ -68,7 +68,7 @@ import Vision
         
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { result, _ in
             if let result {
-                imageModel = ImageProcessModel(image: result, creationDate: asset.creationDate)
+                imageModel = ImageProcessModel(image: result, asset: asset)
             }
         }
         

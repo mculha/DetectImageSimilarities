@@ -12,7 +12,6 @@
 		E90118472AEB09FF00C30CD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E90118462AEB09FF00C30CD9 /* Assets.xcassets */; };
 		E901184A2AEB09FF00C30CD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E90118492AEB09FF00C30CD9 /* Preview Assets.xcassets */; };
 		E90A5E762B05708400B3357B /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E90A5E752B05708400B3357B /* Colors.xcassets */; };
-		E95FEA3A2AEDB54C003BB115 /* PhotoAssetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95FEA392AEDB54C003BB115 /* PhotoAssetModel.swift */; };
 		E98CA68D2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA68C2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift */; };
 		E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */; };
 		E98CA6932AEC575E00BC95BC /* PhotosPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */; };
@@ -36,7 +35,6 @@
 		E90118462AEB09FF00C30CD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E90118492AEB09FF00C30CD9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E90A5E752B05708400B3357B /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
-		E95FEA392AEDB54C003BB115 /* PhotoAssetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAssetModel.swift; sourceTree = "<group>"; };
 		E98CA68C2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewModel.swift; sourceTree = "<group>"; };
 		E98CA6902AEC572E00BC95BC /* PermissionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionProtocol.swift; sourceTree = "<group>"; };
 		E98CA6922AEC575E00BC95BC /* PhotosPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosPermission.swift; sourceTree = "<group>"; };
@@ -115,7 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				E9D991472B02BAB1006EB256 /* Enum */,
-				E95FEA392AEDB54C003BB115 /* PhotoAssetModel.swift */,
 				E9A2E7CD2AFC20A700323ECD /* ImageProcessModel.swift */,
 				E9D991452B02B8F7006EB256 /* ImageModel.swift */,
 			);
@@ -295,7 +292,6 @@
 				E98CA6912AEC572E00BC95BC /* PermissionProtocol.swift in Sources */,
 				E9A7F9AC2B00131900BE1119 /* Extension+Array.swift in Sources */,
 				E9F3B0E32B19120600C44EF2 /* ProcessStatus.swift in Sources */,
-				E95FEA3A2AEDB54C003BB115 /* PhotoAssetModel.swift in Sources */,
 				E9F3B0E52B1A4F0D00C44EF2 /* ProgressView.swift in Sources */,
 				E98F7D952B0B11AA00DECD57 /* PhotoCollectionDetailView.swift in Sources */,
 				E98CA68D2AEC4AEE00BC95BC /* PhotoCollectionViewModel.swift in Sources */,

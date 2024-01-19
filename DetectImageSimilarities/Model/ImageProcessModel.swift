@@ -8,17 +8,22 @@
 import Foundation
 import UIKit
 import Vision
+import PhotosUI
 
 class ImageProcessModel: Identifiable {
     let id: UUID = UUID()
     let image: UIImage
-    let creationDate: Date?
     var observation: VNFeaturePrintObservation? = nil
     var sameImageIds: Set<UUID> = .init()
+    var asset: PHAsset
     
-    init(image: UIImage, creationDate: Date?, observation: VNFeaturePrintObservation? = nil) {
+    var creationDate: Date? {
+        return asset.creationDate
+    }
+    
+    init(image: UIImage, asset: PHAsset, observation: VNFeaturePrintObservation? = nil) {
         self.image = image
-        self.creationDate = creationDate
+        self.asset = asset
         self.observation = observation
     }
 }
