@@ -26,13 +26,6 @@ import Vision
     @ObservationIgnored
     var images: [UUID: ImageProcessModel] = [:]
     
-    @ObservationIgnored
-    let readyID: String = "ready"
-    @ObservationIgnored
-    let progressID: String = "progress"
-    @ObservationIgnored
-    let finishedID: String = "finished"
-    
     private var total = 0
     var progress: Int = 0 {
         didSet {

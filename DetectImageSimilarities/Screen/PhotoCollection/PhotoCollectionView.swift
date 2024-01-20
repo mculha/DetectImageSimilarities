@@ -15,11 +15,11 @@ struct PhotoCollectionView: View {
     
     var body: some View {
         if case .ready = viewModel.status {
-            ReadyForProcessView(title: viewModel.status.title, readyID: viewModel.readyID, startAction: viewModel.fetchPhotoAssets)
+            ReadyForProcessView(title: viewModel.status.title, startAction: viewModel.fetchPhotoAssets)
         } else if case let .processing(progress) = viewModel.status {
-            ProcessingView(title: viewModel.status.title, startTitleAnimation: $viewModel.startTitleAnimation, progressID: viewModel.progressID, progress: progress)
+            ProcessingView(title: viewModel.status.title, startTitleAnimation: $viewModel.startTitleAnimation, progress: progress)
         } else {
-            ResultView(photos: viewModel.photos, finishedID: viewModel.finishedID)
+            ResultView(photos: viewModel.photos)
                 .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                     PermissionView()
                 }
@@ -67,8 +67,9 @@ struct PhotoView: View {
 
 struct ReadyForProcessView: View {
     let title: String
-    let readyID: String
     let startAction: () -> ()
+    
+    private let id: String = "ready"
     
     var body: some View {
         VStack(spacing: 60) {
@@ -81,7 +82,7 @@ struct ReadyForProcessView: View {
             }
             
         }
-        .id(readyID)
+        .id(self.id)
         .transition(.scale.animation(.easeInOut))
     }
 }
@@ -89,8 +90,9 @@ struct ReadyForProcessView: View {
 struct ProcessingView: View {
     let title: String
     @Binding var startTitleAnimation: Bool
-    let progressID: String
     var progress: Int
+    
+    private let id: String = "processing"
     
     var body: some View {
         VStack(spacing: 60) {
@@ -103,7 +105,7 @@ struct ProcessingView: View {
             ProgressView(value: progress)
             
         }
-        .id(progressID)
+        .id(id)
         .transition(.scale.animation(.easeInOut))
         .onAppear {
             startTitleAnimation.toggle()
@@ -120,11 +122,11 @@ struct ResultView: View {
     ]
     
     let photos: [ImageModel]
-    let finishedID: String
+    let id: String = "result"
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 5) {
                         ForEach(Array(photos), id: \.id) { model in
@@ -135,12 +137,12 @@ struct ResultView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal, 10)
             .navigationTitle("Duplicate Photos")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.automatic)
             
         }
-        .id(finishedID)
+        .id(id)
         .transition(.scale.animation(.easeInOut))
     }
 }
