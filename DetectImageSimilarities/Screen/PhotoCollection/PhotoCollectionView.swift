@@ -60,8 +60,7 @@ struct PhotoView: View {
         }
         .clipped()
         .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 7))
-        .shadow(radius: 1)
+        .clipShape(RoundedRectangle(cornerRadius: 1))
     }
 }
 
@@ -116,9 +115,9 @@ struct ProcessingView: View {
 struct ResultView: View {
     
     private let columns: [GridItem] = [
-        GridItem(.flexible(minimum: 40)),
-        GridItem(.flexible(minimum: 40)),
-        GridItem(.flexible(minimum: 40))
+        GridItem(.flexible(minimum: 40), spacing: 2),
+        GridItem(.flexible(minimum: 40), spacing: 2),
+        GridItem(.flexible(minimum: 40), spacing: 2)
     ]
     
     let photos: [ImageModel]
@@ -128,7 +127,7 @@ struct ResultView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columns, alignment: .center, spacing: 5) {
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 2) {
                         ForEach(Array(photos), id: \.id) { model in
                             NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
                                 PhotoView(model: model)
@@ -137,7 +136,7 @@ struct ResultView: View {
                     }
                 }
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 0)
             .navigationTitle("Duplicate Photos")
             .navigationBarTitleDisplayMode(.automatic)
             
