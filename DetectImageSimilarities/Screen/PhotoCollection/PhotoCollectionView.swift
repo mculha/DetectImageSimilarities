@@ -11,60 +11,15 @@ import Photos
 struct PhotoCollectionView: View {
     
     @State private var viewModel: PhotoCollectionViewModel = .init(smartAlbum: .smartAlbumUserLibrary)
-    
-    private let columns: [GridItem] = [
-        GridItem(.flexible(minimum: 40)),
-        GridItem(.flexible(minimum: 40)),
-        GridItem(.flexible(minimum: 40))
-    ]
+
     
     var body: some View {
         if case .ready = viewModel.status {
-            VStack(spacing: 60) {
-                Text(viewModel.status.title)
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundStyle(.blue)
-                
-                Button(action: self.viewModel.fetchPhotoAssets) {
-                    StartButton()
-                }
-                
-            }
-            .id(viewModel.readyID)
-            .transition(.scale.animation(.easeInOut))
-            
+            ReadyForProcessView(title: viewModel.status.title, readyID: viewModel.readyID, startAction: viewModel.fetchPhotoAssets)
         } else if case let .processing(progress) = viewModel.status {
-            VStack(spacing: 60) {
-                Text(viewModel.status.title)
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundStyle(.blue)
-                    .opacity(viewModel.startTitleAnimation ? 0.1 : 1.0)
-                    .animation(.easeInOut(duration: 1.0).repeatForever(), value: viewModel.startTitleAnimation)
-                
-                ProgressView(value: progress)
-                
-            }
-            .id(viewModel.progressID)
-            .transition(.scale.animation(.easeInOut))
-            .onAppear {
-                viewModel.startTitleAnimation.toggle()
-            }
+            ProcessingView(title: viewModel.status.title, startTitleAnimation: $viewModel.startTitleAnimation, progressID: viewModel.progressID, progress: progress)
         } else {
-            NavigationStack {
-                VStack {
-                    ScrollView(showsIndicators: false) {
-                        LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                            ForEach(Array(viewModel.photos), id: \.id) { model in
-                                NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
-                                    PhotoView(model: model)
-                                }
-                            }
-                        }
-                    }
-                }
-                .padding()
-                .navigationTitle("Duplicate Photos")
-                .navigationBarTitleDisplayMode(.inline)
+            ResultView(photos: viewModel.photos, finishedID: viewModel.finishedID)
                 .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                     PermissionView()
                 }
@@ -73,9 +28,6 @@ struct PhotoCollectionView: View {
                         await viewModel.requestPhotoAccess()
                     }
                 }
-            }
-            .id(viewModel.finishedID)
-            .transition(.scale.animation(.easeInOut))
         }
     }
 }
@@ -110,5 +62,85 @@ struct PhotoView: View {
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 7))
         .shadow(radius: 1)
+    }
+}
+
+struct ReadyForProcessView: View {
+    let title: String
+    let readyID: String
+    let startAction: () -> ()
+    
+    var body: some View {
+        VStack(spacing: 60) {
+            Text(title)
+                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .foregroundStyle(.blue)
+            
+            Button(action: startAction) {
+                StartButton()
+            }
+            
+        }
+        .id(readyID)
+        .transition(.scale.animation(.easeInOut))
+    }
+}
+
+struct ProcessingView: View {
+    let title: String
+    @Binding var startTitleAnimation: Bool
+    let progressID: String
+    var progress: Int
+    
+    var body: some View {
+        VStack(spacing: 60) {
+            Text(title)
+                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .foregroundStyle(.blue)
+                .opacity(startTitleAnimation ? 0.1 : 1.0)
+                .animation(.easeInOut(duration: 1.0).repeatForever(), value: startTitleAnimation)
+            
+            ProgressView(value: progress)
+            
+        }
+        .id(progressID)
+        .transition(.scale.animation(.easeInOut))
+        .onAppear {
+            startTitleAnimation.toggle()
+        }
+    }
+}
+
+struct ResultView: View {
+    
+    private let columns: [GridItem] = [
+        GridItem(.flexible(minimum: 40)),
+        GridItem(.flexible(minimum: 40)),
+        GridItem(.flexible(minimum: 40))
+    ]
+    
+    let photos: [ImageModel]
+    let finishedID: String
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 5) {
+                        ForEach(Array(photos), id: \.id) { model in
+                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
+                                PhotoView(model: model)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding()
+            .navigationTitle("Duplicate Photos")
+            .navigationBarTitleDisplayMode(.inline)
+            
+        }
+        .id(finishedID)
+        .transition(.scale.animation(.easeInOut))
     }
 }
