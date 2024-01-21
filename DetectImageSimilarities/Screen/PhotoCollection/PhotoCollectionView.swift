@@ -127,9 +127,10 @@ struct ResultView: View {
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 2) {
                         ForEach(Array(photos), id: \.id) { model in
-                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
-                                PhotoView(model: model)
-                            }
+//                            NavigationLink(destination: PhotoCollectionDetailView(viewModel: .init(imageModel: model))) {
+//                                PhotoView(model: model)
+//                            }
+                            PhotoView(model: model)
                         }
                     }
                 }
