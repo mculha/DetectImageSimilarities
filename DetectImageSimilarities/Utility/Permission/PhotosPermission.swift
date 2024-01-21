@@ -18,7 +18,7 @@ final class PhotosPermission: PermissionProtocol {
             return .limited
         } else if status == .notDetermined {
             let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-            return status == .authorized ? .authorized : .denied
+            return status == .authorized ? .authorized : (status == .limited ? .limited : .denied)
         } else {
             return .denied
         }

@@ -16,18 +16,16 @@ struct PhotoCollectionView: View {
     var body: some View {
         if case .ready = viewModel.status {
             ReadyForProcessView(title: viewModel.status.title, startAction: viewModel.fetchPhotoAssets)
-        } else if case let .processing(progress) = viewModel.status {
-            ProcessingView(title: viewModel.status.title, startTitleAnimation: $viewModel.startTitleAnimation, progress: progress)
-        } else {
-            ResultView(photos: viewModel.photos)
                 .fullScreenCover(isPresented: $viewModel.presentPermissionRequired) {
                     PermissionView()
                 }
                 .onAppear {
-                    Task {
-                        await viewModel.requestPhotoAccess()
-                    }
+                    Task { await viewModel.requestPhotoAccess() }
                 }
+        } else if case let .processing(progress) = viewModel.status {
+            ProcessingView(title: viewModel.status.title, startTitleAnimation: $viewModel.startTitleAnimation, progress: progress)
+        } else {
+            ResultView(photos: viewModel.photos)
         }
     }
 }
