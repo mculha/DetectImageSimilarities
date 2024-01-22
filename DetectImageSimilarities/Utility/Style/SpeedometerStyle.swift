@@ -11,11 +11,11 @@ import SwiftUI
 struct SpeedometerStyle: GaugeStyle {
     
     private let gradient = LinearGradient(gradient: Gradient(colors: [
-        Color(red: 197/255, green: 232/255, blue: 183/255),
-        Color(red: 171/255, green: 224/255, blue: 152/255),
-        Color(red: 131/255, green: 212/255, blue: 117/255),
-        Color(red: 87/255, green: 200/255, blue: 77/255),
-        Color(red: 46/255, green: 182/255, blue: 44/255),
+        Color(.gradientSpeedometer1),
+        Color(.gradientSpeedometer2),
+        Color(.gradientSpeedometer3),
+        Color(.gradientSpeedometer4),
+        Color(.gradientSpeedometer5)
     ]), startPoint: .trailing, endPoint: .leading)
 
     func makeBody(configuration: Configuration) -> some View {
